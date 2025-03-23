@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Prediction Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        .hidden { display: none; }
+        .container { max-width: 400px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+        button { margin-top: 10px; padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>IPL Prediction Game</h2>
+    
+    <label for="email">Select Email:</label>
+    <select id="email"></select>
+
+    <label for="name">Select Name:</label>
+    <select id="name"></select>
+
+    <div id="match-container" class="hidden">
+        <h3>Today's Match</h3>
+        <p id="match-info"></p>
+        
+        <label>
+            <input type="checkbox" id="team1-checkbox" onclick="toggleCheckbox('team1')"> <span id="team1-label"></span>
+        </label>
+        <label>
+            <input type="checkbox" id="team2-checkbox" onclick="toggleCheckbox('team2')"> <span id="team2-label"></span>
+        </label>
+
+        <button onclick="submitPrediction()">Submit</button>
+    </div>
+
+    <h3>API Response:</h3>
+    <pre id="api-response"></pre>
+</div>
+
+<script>
+    const matchData = [
+        { date: "2025-03-23", team1: "SRH", team2: "RR" },
+        { date: "2025-03-24", team1: "MI", team2: "RCB" }
+    ];
+    
+    const emails = ["user1@example.com", "user2@example.com"];
+    const names = ["John Doe", "Jane Smith"];
+
+    const today = new Date().toISOString().split("T")[0];
+    const todayMatch = matchData.find(m => m.date === today);
+
+    function populateDropdown(id, values) {
+        const dropdown = document.getElementById(id);
+        values.forEach(val => {
+            const option = document.createElement("option");
+            option.value = val;
+            option.textContent = val;
+            dropdown.appendChild(option);
+        });
+    }
+
+    function setupPage() {
+        populateDropdown("email", emails);
+        populateDropdown("name", names);
+
+        if (todayMatch) {
+            document.getElementById("match-info").textContent = `${todayMatch.team1} vs ${todayMatch.team2}`;
+            document.getElementById("team1-label").textContent = todayMatch.team1;
+            document.getElementById("team2-label").textContent = todayMatch.team2;
+            
+            document.getElementById("team1-checkbox").value = todayMatch.team1;
+            document.getElementById("team2-checkbox").value = todayMatch.team2;
+            
+            document.getElementById("team1-checkbox").disabled = false;
+            document.getElementById("team2-checkbox").disabled = false;
+
+            document.getElementById("match-container").classList.remove("hidden");
+        }
+    }
+
+    function toggleCheckbox(team) {
+        if (team === "team1") {
+            document.getElementById("team2-checkbox").checked = false;
+        } else {
+            document.getElementById("team1-checkbox").checked = false;
+        }
+    }
+
+    function submitPrediction() {
+        const email = document.getElementById("email").value;
+        const name = document.getElementById("name").value;
+        const team1 = document.getElementById("team1-checkbox");
+        const team2 = document.getElementById("team2-checkbox");
+
+        let selectedTeam = null;
+        if (team1.checked) selectedTeam = team1.value;
+        if (team2.checked) selectedTeam = team2.value;
+
+        if (!selectedTeam) {
+            alert("Please select a team!");
+            return;
+        }
+
+        const requestData = { email, name, selectedTeam, date: today };
+
+        fetch("https://example.com/api/prediction", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("api-response").textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            document.getElementById("api-response").textContent = "Error: " + error.message;
+        });
+    }
+
+    setupPage();
+</script>
+
+</body>
+</html>
