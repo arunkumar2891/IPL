@@ -145,7 +145,7 @@
                     throw new Error(`API Error: ${response.statusText}`);
                 }
 
-                const responseData = await response.json();
+                const responseData = response.json();
                 apiResponseField.textContent = JSON.stringify(responseData, null, 2);
             } catch (error) {
                 apiResponseField.textContent = `Failed to submit: ${error.message}`;
