@@ -142,14 +142,16 @@
                     body: JSON.stringify(requestData)
                 }).then(response =>{ 
 				console.log("Response Headers:", [...response.headers.entries()]);
-				return response.json()})
+				return response.json()
+			})
 			.then(data => {
 				document.getElementById("apiResponse").textContent = JSON.stringify(data, null, 2);
 			})
 			.catch(error => {
 				document.getElementById("apiResponse").textContent = "Error: " + error.message;
 			});
-		    document.getElementById("apiResponse").textContent = JSON.stringify(requestData, null, 2).replace("{","").replace("}","");
+		    
+		document.getElementById("apiResponse").textContent = JSON.stringify(requestData, null, 2);<!--.replace("{","").replace("}","");-->
             
         }
 
