@@ -140,14 +140,15 @@
                       	"Authorization": "Bearer UtsBBeCoY5yJ2JFaYXxsdFc4KIzXzXt5"
                     },
                     body: JSON.stringify(requestData)
-                });
-		
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.headers.entries()}`);
-                }
-
-                const responseData = response.json();
-                apiResponseField.textContent = JSON.stringify(responseData, null, 2);
+                }).then(response =>{ 
+				console.log("Response Headers:", [...response.headers.entries()]);
+				return response.json()})
+			.then(data => {
+				document.getElementById("apiResponse").textContent = JSON.stringify(data, null, 2);
+			})
+			.catch(error => {
+				document.getElementById("apiResponse").textContent = "Error: " + error.message;
+			});
             } catch (error) {
                 apiResponseField.textContent = `Failed to submit: ${error.message}`;
             }
