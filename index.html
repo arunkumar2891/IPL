@@ -149,8 +149,6 @@
 			.catch(error => {
 				document.getElementById("apiResponse").textContent = "Error: " + error.message;
 			});
-		    
-		document.getElementById("apiResponse").textContent = JSON.stringify(requestData, null, 2);
         }
 
         document.getElementById("emailInput").addEventListener("blur", validateEmail);
