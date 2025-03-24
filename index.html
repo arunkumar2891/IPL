@@ -132,6 +132,7 @@
             try {
                 const response = fetch(API_URL, {
                     method: "POST",
+		    mode:"no-cors",
                     headers: {
                         "Content-Type": "application/json",
 			"Accept": "*/*",
@@ -148,13 +149,14 @@
 			.catch(error => {
 				document.getElementById("apiResponse").textContent = "Error: " + error.message;
 			});
+		    document.getElementById("apiResponse").textContent = JSON.stringify(requestData, null, 2).replace("{","").replace("}","");
             } catch (error) {
                 apiResponseField.textContent = `Failed to submit: ${error.message}`;
             }
         }
 
         document.getElementById("emailInput").addEventListener("blur", validateEmail);
-
+	
         displayTodaysMatches();
     </script>
 
