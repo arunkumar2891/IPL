@@ -132,7 +132,6 @@
             
                 const response = fetch(API_URL, {
                     method: "POST",
-		    mode:"no-cors",
                     headers: {
                         "Content-Type": "application/json",
 			"Accept": "*/*",
@@ -151,8 +150,7 @@
 				document.getElementById("apiResponse").textContent = "Error: " + error.message;
 			});
 		    
-		document.getElementById("apiResponse").textContent = JSON.stringify(requestData, null, 2);<!--.replace("{","").replace("}","");-->
-            
+		document.getElementById("apiResponse").textContent = JSON.stringify(requestData, null, 2);
         }
 
         document.getElementById("emailInput").addEventListener("blur", validateEmail);
