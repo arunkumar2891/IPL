@@ -144,7 +144,7 @@
 				return response.json()
 			})
 			.then(data => {
-				document.getElementById("apiResponse").textContent = JSON.stringify(data, null, 2);
+				document.getElementById("apiResponse").textContent = JSON.stringify(data.response, null, 2);
 			})
 			.catch(error => {
 				document.getElementById("apiResponse").textContent = "Error: " + error.message;
