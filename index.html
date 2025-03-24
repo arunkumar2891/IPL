@@ -141,9 +141,9 @@
                     },
                     body: JSON.stringify(requestData)
                 });
-
+		
                 if (!response.ok) {
-                    throw new Error(`API Error: ${response.statusText}`);
+                    throw new Error(`API Error: ${response.headers.entries()}`);
                 }
 
                 const responseData = response.json();
