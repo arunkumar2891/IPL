@@ -136,14 +136,15 @@
             };
 			console.log("requestData ", requestData);
 			console.log("requestData ", JSON.stringify(requestData));
-
+	    const requestBody = new Blob([requestData], { type: "application/json" });
+		
             try {
 			const response = await fetch(API_URL, {
 				method: "POST",
 				headers: {
 				"Content-Type": "application/json",
 				"Accept": "*/*",
-				"Content-Length": requestData.length.toString()
+				"Content-Length": requestBody.size.toString()  // Ensure accurate byte size
 				},
 				body: JSON.stringify(requestData)
 				});
