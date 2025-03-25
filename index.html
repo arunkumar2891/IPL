@@ -139,7 +139,8 @@
 	    const requestBody = new Blob([requestData], { type: "application/json" });
 		console.log(requestBody.size.toString());
 		console.log(requestData.toString().length);
-		
+		console.log(requestData.toString().length);
+		console.log("requestData ", JSON.stringify(requestData).length);
             try {
 			const response = await fetch(API_URL, {
 				method: "POST",
