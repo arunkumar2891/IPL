@@ -86,7 +86,7 @@
 							<h3>Match #${match.MatchNumber}</h3>
 							<p><strong>Location:</strong> ${match.Location}</p>
 							<p><strong>Teams:</strong> ${match.HomeTeam} vs ${match.AwayTeam}</p>
-							<p><strong>Start Time (IST):</strong> ${matchDateIst.toISOString().replace("T", " ").split(".")[0]}</p>
+							<p><strong>Start Time (IST):</strong> ${convertToIST(match.DateUtc)}</p>
 
 							<label><input type="radio" name="team${match.MatchNumber}" value="${match.HomeTeam}" ${!submissionAllowed ? "disabled" : ""}> ${match.HomeTeam}</label>
 							<label><input type="radio" name="team${match.MatchNumber}" value="${match.AwayTeam}" ${!submissionAllowed ? "disabled" : ""}> ${match.AwayTeam}</label>
