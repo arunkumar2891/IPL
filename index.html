@@ -150,7 +150,7 @@
 				
 				const data = await response.json();
 				console.log("data ", data);
-				apiResponseField.textContent = JSON.stringify(data, null, 2);
+				apiResponseField.textContent = JSON.stringify(data.response, null, 2);
 				submitButton.textContent = "Submitted"; // Change text after success
 			} catch (error) {
 				console.error("Submission Error:", error);
