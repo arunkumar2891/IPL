@@ -144,7 +144,7 @@
 				"Content-Type": "application/json",
 				"Accept": "*/*"
 				},
-				body: JSON.stringify(requestData)
+				body: requestData
 				});
 				
 				if (!response.ok) throw new Error("Failed to submit prediction.");
