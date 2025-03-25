@@ -135,14 +135,14 @@
                 selectedTeam: selectedTeam.value
             };
 			console.log("requestData ", requestData);
+			console.log("requestData ", JSON.stringify(requestData));
 
             try {
 			const response = await fetch(API_URL, {
 				method: "POST",
 				headers: {
 				"Content-Type": "application/json",
-				"Accept": "*/*",
-				"Accept-Encoding": "gzip, deflate, br"
+				"Accept": "*/*"
 				},
 				body: JSON.stringify(requestData)
 				});
@@ -151,7 +151,7 @@
 				
 				const data = await response.json();
 				console.log("data ", data);
-				apiResponseField.textContent = JSON.stringify(data.response, null, 2);
+				apiResponseField.textContent = JSON.stringify(data, null, 2);
 				submitButton.textContent = "Submitted"; // Change text after success
 			} catch (error) {
 				console.error("Submission Error:", error);
