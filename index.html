@@ -109,7 +109,6 @@
 		
         async function submitPrediction(matchNumber) {
             const email = document.getElementById("emailInput").value.trim();
-            const selectedTeam = document.querySelector(`input[name="teamSelect_${matchNumber}"]:checked`);
             const errorField = document.getElementById(`match_${matchNumber}_error`);
             const apiResponseField = document.getElementById("apiResponse");
 			const selectedTeam = document.querySelector(`input[name="team${matchNumber}"]:checked`);
