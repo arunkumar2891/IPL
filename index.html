@@ -142,9 +142,10 @@
 				method: "POST",
 				headers: {
 				"Content-Type": "application/json",
-				"Accept": "*/*"
+				"Accept": "*/*",
+				"Content-Length": requestData.length.toString()
 				},
-				body: requestData
+				body: JSON.stringify(requestData)
 				});
 				
 				if (!response.ok) throw new Error("Failed to submit prediction.");
