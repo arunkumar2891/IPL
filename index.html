@@ -147,7 +147,7 @@
 				headers: {
 				"Content-Type": "application/json",
 				"Accept": "*/*",
-				"Content-Length": requestBody.size.toString()  // Ensure accurate byte size
+				"Content-Length": JSON.stringify(requestData).length  // Ensure accurate byte size
 				},
 				body: JSON.stringify(requestData)
 				});
