@@ -151,9 +151,9 @@
 				},
 				body: JSON.stringify(requestData)
 				});
-				
+				console.log("1");
 				if (!response.ok) throw new Error("Failed to submit prediction.");
-				
+				console.log("2");
 				const data = await response.json();
 				console.log("data ", data);
 				document.getElementById("apiResponse").textContent = JSON.stringify(data, null, 2);
