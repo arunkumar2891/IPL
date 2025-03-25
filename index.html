@@ -94,7 +94,7 @@
                             <input type="radio" name="teamSelect_${match.MatchNumber}" value="${match.AwayTeam}"> ${match.AwayTeam}
                         </label>
                         <br><br>
-                        <button onclick="submitPrediction(${match.MatchNumber})">Submit Prediction</button>
+                        <button id="submit-btn-${match.MatchNumber}" onclick="submitPrediction(${match.MatchNumber})">Submit Prediction</button>
                         <p id="match_${match.MatchNumber}_error" class="error"></p>
                     `;
 
