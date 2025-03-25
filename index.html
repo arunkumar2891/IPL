@@ -113,7 +113,7 @@
             const email = document.getElementById("emailInput").value.trim();
             const errorField = document.getElementById(`match_${matchNumber}_error`);
             const apiResponseField = document.getElementById("apiResponse");
-			const selectedTeam = document.querySelector(`input[name="team${matchNumber}"]:checked`);
+			const selectedTeam = document.querySelector(`input[name="teamSelect_${matchNumber}"]:checked`);
 			const submitButton = document.getElementById(`submit-btn-${matchNumber}`);
 
             if (!validateEmail()) {
