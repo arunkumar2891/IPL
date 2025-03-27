@@ -57,7 +57,7 @@
         }
 
         function validateEmail() {
-            const emailInput = document.getElementById("emailInput").value.trim();
+            const emailInput = document.getElementById("emailInput").value.trim().toLowerCase();
             const emailError = document.getElementById("emailError");
 
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput)) {
