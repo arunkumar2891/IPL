@@ -1,3 +1,4 @@
 window.env = {
-    API_TOKEN: "UtsBBeCoY5yJ2JFaYXxsdFc4KIzXzXt5"
+    API_TOKEN: "UtsBBeCoY5yJ2JFaYXxsdFc4KIzXzXt5",
+    LEADER_TOKEN: "YD6jRGe6gWL7VyTSUAUPyreJZ26F4tjG"
 }
