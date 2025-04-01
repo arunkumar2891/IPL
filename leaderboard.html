@@ -29,7 +29,7 @@
     <div id="leaderboard"></div>
 
     <script>
-        const API_TOKEN = window.env.API_TOKEN;
+        const LEADER_TOKEN = window.env.LEADER_TOKEN;
         const LEADERBOARD_API_URL = `https://snpl-fmqa.paloaltonetworks.com/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/BidDetails_API?bearer_token=${encodeURIComponent(LEADER_TOKEN)}`; // Replace with actual API endpoint
 
         async function fetchLeaderboard() {
