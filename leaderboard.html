@@ -38,7 +38,7 @@
                 if (!response.ok) throw new Error("Failed to fetch leaderboard.");
                 
                 const data = await response.json();
-                displayLeaderboard(data);
+                displayLeaderboard(data.response);
             } catch (error) {
                 console.error("Leaderboard Fetch Error:", error);
                 alert("Leaderboard Fetch Error. Please try again.");
