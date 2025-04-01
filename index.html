@@ -174,7 +174,7 @@
 	const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
 	const LEADER_TOKEN = window.env.LEADER_TOKEN;
         const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/BidDetails_API?bearer_token=${encodeURIComponent(LEADER_TOKEN)}&Name=${encodeURIComponent(qemail)}`; // Replace with actual API endpoint
-	fetchLeaderboard();
+	
         async function fetchLeaderboard() {
             try {
                 const response = await fetch(LEADERBOARD_API_URL);
@@ -189,6 +189,7 @@
             }
         }
 
+	fetchLeaderboard();
         function displayLeaderboard(data) {
             const leaderboardDiv = document.getElementById("leaderboard");
             let html = "<h3>Leaderboard</h3><table><tr><th>S.No.</th><th>Name</th><th>Amount</th></tr>";
