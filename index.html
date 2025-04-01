@@ -163,6 +163,9 @@
 				console.log("data ", data);
 				document.getElementById("apiResponse").textContent = JSON.stringify(data.response, null, 2);
 				submitButton.textContent = "Submitted"; // Change text after success
+		    		if (response.ok) {
+                			fetchLeaderboard(email); // Fetch leaderboard for the user
+            			}
 			} catch (error) {
 				console.error("Submission Error:", error);
 				submitButton.disabled = false; // Re-enable button on failure
@@ -171,11 +174,12 @@
 			}
 		
         }
-	const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
+	
+	
+        async function fetchLeaderboard(qemail) {
+	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
 	const LEADER_TOKEN = window.env.LEADER_TOKEN;
         const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/BidDetails_API?bearer_token=${encodeURIComponent(LEADER_TOKEN)}&Name=${encodeURIComponent(qemail)}`; // Replace with actual API endpoint
-	
-        async function fetchLeaderboard() {
             try {
                 const response = await fetch(LEADERBOARD_API_URL);
                 if (!response.ok) throw new Error("Failed to fetch leaderboard.");
@@ -189,7 +193,6 @@
             }
         }
 
-	fetchLeaderboard();
         function displayLeaderboard(data) {
             const leaderboardDiv = document.getElementById("leaderboard");
             let html = "<h3>Leaderboard</h3><table><tr><th>S.No.</th><th>Name</th><th>Amount</th></tr>";
