@@ -184,9 +184,9 @@
 				console.log("data ", data);
 				document.getElementById("apiResponse").textContent = JSON.stringify(data.response, null, 2);
 				submitButton.textContent = "Submitted"; // Change text after success
-		    		/*if (response.ok) {
+		    		if (response.ok) {
                 			fetchLeaderboard(email); // Fetch leaderboard for the user
-            			}*/
+            			}
 			} catch (error) {
 				console.error("Submission Error:", error);
 				submitButton.disabled = false; // Re-enable button on failure
