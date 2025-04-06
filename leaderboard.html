@@ -78,10 +78,10 @@
 
         function displayLeaderboard(data) {
             const leaderboardDiv = document.getElementById("leaderboard");
-            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Amount</th><th>Group</th></tr>";
+            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Amount</th><th>Group</th><th>As Of</th></tr>";
             
             data.forEach((entry, index) => {
-                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.Amount}</td><td>${entry.Group}</td></tr>`;
+                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.Amount}</td><td>${entry.Group}</td><td>${entry.matchNumber}</td></tr>`;
             });
             
             html += "</table>";
