@@ -167,6 +167,7 @@
                             <input type="radio" name="teamSelect_${match.MatchNumber}" value="${match.AwayTeam}"> ${match.AwayTeam}
                         </label>
                         <br><br>
+			<p id="countdown-${match.MatchNumber}" style="color: #333;"></p>
                         <button id="submit-btn-${match.MatchNumber}" 
                             onclick="submitPrediction(${match.MatchNumber})"
                             ${!submissionAllowed ? 'disabled title="Submission closed for this match"' : ''}>
@@ -176,6 +177,8 @@
                     `;
         
                     matchContainer.appendChild(matchDiv);
+		    // Start countdown timer for each match
+            	    startCountdown(match.MatchNumber, match.DateUtc);
                 }
             });
         
@@ -184,6 +187,27 @@
             }
         }
 
+	    
+	function startCountdown(matchNumber, matchDateUtc) {
+	    const countdownEl = document.getElementById(`countdown-${matchNumber}`);
+	    const submitButton = document.getElementById(`submit-btn-${matchNumber}`);
+	    const cutoffTime = new Date(new Date(matchDateUtc).getTime() - 15 * 60 * 1000); // 15 minutes before match
+	
+	    const intervalId = setInterval(() => {
+	        const now = new Date();
+	        const timeLeft = cutoffTime - now;
+	
+	        if (timeLeft <= 0) {
+	            countdownEl.textContent = "Submission closed";
+	            submitButton.disabled = true;
+	            clearInterval(intervalId);
+	        } else {
+	            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+	            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+	            countdownEl.textContent = `🕒 Time left to submit: ${minutes}m ${seconds}s`;
+	        }
+	    }, 1000);
+	}
 		
         function isSubmissionAllowed(dateUtc) {
             const matchTime = new Date(dateUtc).getTime();
