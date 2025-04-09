@@ -167,7 +167,7 @@
                             <input type="radio" name="teamSelect_${match.MatchNumber}" value="${match.AwayTeam}"> ${match.AwayTeam}
                         </label>
                         <br><br>
-			<p id="countdown-${match.MatchNumber}" style="color: #333;"></p>
+			<p id="countdown-${match.MatchNumber}-ist"></p>
                         <button id="submit-btn-${match.MatchNumber}" 
                             onclick="submitPrediction(${match.MatchNumber})"
                             ${!submissionAllowed ? 'disabled title="Submission closed for this match"' : ''}>
@@ -189,25 +189,35 @@
 
 	    
 	function startCountdown(matchNumber, matchDateUtc) {
-	    const countdownEl = document.getElementById(`countdown-${matchNumber}`);
+	    const countdownEl = document.getElementById(`countdown-${matchNumber}-ist`);
 	    const submitButton = document.getElementById(`submit-btn-${matchNumber}`);
-	    const cutoffTime = new Date(new Date(matchDateUtc).getTime() - 15 * 60 * 1000); // 15 minutes before match
+	
+	    const matchTimeUtc = new Date(matchDateUtc);
+	    const cutoffUtc = new Date(matchTimeUtc.getTime() - 15 * 60 * 1000); // 15 mins before match
+	
+	    const istOffset = 5.5 * 60 * 60 * 1000;
+	    const cutoffIst = new Date(cutoffUtc.getTime() + istOffset);
 	
 	    const intervalId = setInterval(() => {
-	        const now = new Date();
-	        const timeLeft = cutoffTime - now;
+	        const nowUtc = new Date();
+	        const nowIst = new Date(nowUtc.getTime() + istOffset);
+	
+	        const timeLeft = cutoffIst - nowIst;
 	
 	        if (timeLeft <= 0) {
-	            countdownEl.textContent = "Submission closed";
+	            countdownEl.textContent = "⛔ Submission closed";
 	            submitButton.disabled = true;
 	            clearInterval(intervalId);
 	        } else {
-	            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-	            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-	            countdownEl.textContent = `🕒 Time left to submit: ${minutes}m ${seconds}s`;
+	            const hours = String(Math.floor((timeLeft / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+	            const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(2, '0');
+	            const seconds = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, '0');
+	
+	            countdownEl.textContent = `🕒 Time left to submit (IST): ${hours}:${minutes}:${seconds}`;
 	        }
 	    }, 1000);
 	}
+
 		
         function isSubmissionAllowed(dateUtc) {
             const matchTime = new Date(dateUtc).getTime();
