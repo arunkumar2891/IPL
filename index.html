@@ -94,7 +94,7 @@
             }
         }
 
-        function displayTodaysMatches() {
+        /*function displayTodaysMatches() {
             const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD
             const matchContainer = document.getElementById("matchContainer");
             matchContainer.innerHTML = ""; // Clear previous matches
@@ -103,7 +103,8 @@
 
             matchData.forEach(match => {
                 const matchDate = new Date(match.DateUtc).toISOString().split("T")[0]; // Extract date
-
+                const submissionAllowed = isSubmissionAllowed(match.DateUtc);
+                
                 if (matchDate === today) {
                     matchesFound = true;
 
@@ -134,16 +135,69 @@
             if (!matchesFound) {
                 matchContainer.innerHTML = "<p>No matches today.</p>";
             }
-        }
-		
+        }*/
 
+        function displayTodaysMatches() {
+            const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD
+            const matchContainer = document.getElementById("matchContainer");
+            matchContainer.innerHTML = ""; // Clear previous matches
+        
+            let matchesFound = false;
+        
+            matchData.forEach(match => {
+                const matchDate = new Date(match.DateUtc).toISOString().split("T")[0]; // Extract date
+                const submissionAllowed = isSubmissionAllowed(match.DateUtc);
+        
+                if (matchDate === today) {
+                    matchesFound = true;
+        
+                    const matchDiv = document.createElement("div");
+                    matchDiv.classList.add("match-container");
+        
+                    matchDiv.innerHTML = `
+                        <h3>Match ${match.MatchNumber}</h3>
+                        <p><strong>Date (UTC):</strong> ${match.DateUtc}</p>
+                        <p><strong>Date (IST):</strong> ${convertToIST(match.DateUtc)}</p>
+                        <p><strong>Location:</strong> ${match.Location}</p>
+                        <p><strong>Teams:</strong> ${match.HomeTeam} vs ${match.AwayTeam}</p>
+                        <label>
+                            <input type="radio" name="teamSelect_${match.MatchNumber}" value="${match.HomeTeam}"> ${match.HomeTeam}
+                        </label>
+                        <label>
+                            <input type="radio" name="teamSelect_${match.MatchNumber}" value="${match.AwayTeam}"> ${match.AwayTeam}
+                        </label>
+                        <br><br>
+                        <button id="submit-btn-${match.MatchNumber}" 
+                            onclick="submitPrediction(${match.MatchNumber})"
+                            ${!submissionAllowed ? 'disabled title="Submission closed for this match"' : ''}>
+                            Submit Prediction
+                        </button>
+                        <p id="match_${match.MatchNumber}_error" class="error"></p>
+                    `;
+        
+                    matchContainer.appendChild(matchDiv);
+                }
+            });
+        
+            if (!matchesFound) {
+                matchContainer.innerHTML = "<p>No matches today.</p>";
+            }
+        }
+
+		
+        function isSubmissionAllowed(dateUtc) {
+            const matchTime = new Date(dateUtc).getTime();
+            const cutoffTime = matchTime - 15 * 60 * 1000; // 15 minutes before match
+            const currentTime = new Date().getTime();
+            return currentTime < cutoffTime;
+        }
 		
         async function submitPrediction(matchNumber) {
             const email = document.getElementById("emailInput").value.trim().toLowerCase();
             const errorField = document.getElementById(`match_${matchNumber}_error`);
             const apiResponseField = document.getElementById("apiResponse");
-	    const selectedTeam = document.querySelector(`input[name="teamSelect_${matchNumber}"]:checked`);
-	    const submitButton = document.getElementById(`submit-btn-${matchNumber}`);
+	          const selectedTeam = document.querySelector(`input[name="teamSelect_${matchNumber}"]:checked`);
+	          const submitButton = document.getElementById(`submit-btn-${matchNumber}`);
 
             if (!validateEmail()) {
                 errorField.textContent = "Please enter a valid email.";
@@ -194,36 +248,6 @@
 				alert("Failed to submit. Please try again.");
 			}
 		
-        }
-	
-	
-        async function fetchLeaderboard(qemail) {
-	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
-	const LEADER_TOKEN = window.env.LEADER_TOKEN;
-        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/BidDetails_API?bearer_token=${encodeURIComponent(LEADER_TOKEN)}&Name=${qemail}`; // Replace with actual API endpoint
-            try {
-                const response = await fetch(LEADERBOARD_API_URL);
-                if (!response.ok) throw new Error("Failed to fetch leaderboard.");
-                console.log("3");
-                const data = await response.json();
-		console.log(data);
-                displayLeaderboard(data);
-            } catch (error) {
-                console.error("Leaderboard Fetch Error:", error);
-                alert("Leaderboard Fetch Error. Please try again.");
-            }
-        }
-
-        function displayLeaderboard(data) {
-            const leaderboardDiv = document.getElementById("leaderboard");
-            let html = "<h3>Leaderboard</h3><table><tr><th>S.No.</th><th>Name</th><th>Amount</th></tr>";
-            
-            //data.forEach((entry, index) => {
-                html += `<tr><td>1</td><td>${data.Name}</td><td>${data.Amount}</td></tr>`;
-           // });
-            
-            html += "</table>";
-            leaderboardDiv.innerHTML = html;
         }
 
         document.getElementById("emailInput").addEventListener("blur", validateEmail);
