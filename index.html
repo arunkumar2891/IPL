@@ -213,7 +213,7 @@
 	            const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(2, '0');
 	            const seconds = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, '0');
 	
-	            countdownEl.textContent = `🕒 Time left to submit (IST): ${hours}:${minutes}:${seconds}`;
+	            countdownEl.textContent = `🕒 Time left to submit: ${hours}:${minutes}:${seconds}`;
 	        }
 	    }, 1000);
 	}
