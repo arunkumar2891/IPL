@@ -197,7 +197,7 @@
 	            const hours = String(Math.floor((timeLeft / (1000 * 60 * 60)) % 24)).padStart(2, '0');
 	            const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(2, '0');
 	            const seconds = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, '0');
-		    fetchLeaderboard();
+		    //fetchLeaderboard();
 	            countdownEl.textContent = `🕒 Time left to submit: ${hours}:${minutes}:${seconds}`;
 	        }
 	    }, 1000);
