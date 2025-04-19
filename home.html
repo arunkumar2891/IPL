@@ -137,8 +137,14 @@
 		    // Start countdown timer for each match
             	    startCountdown(match.MatchNumber, match.DateUtc);
 		    ${submissionAllowed} ? fetchLeaderboard() : '';
-	
-		        async function fetchLeaderboard() {
+                }
+            });
+        
+            if (!matchesFound) {
+                matchContainer.innerHTML = "<p>No matches today.</p>";
+            }
+        }
+	 async function fetchLeaderboard() {
 			//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
 			const BID_TOKEN = window.env.BID_TOKEN;
 		        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN)}`; // Replace with actual API endpoint
@@ -166,14 +172,6 @@
 		            html += "</table>";
 		            leaderboardDiv.innerHTML = html;
 		        }
-                }
-            });
-        
-            if (!matchesFound) {
-                matchContainer.innerHTML = "<p>No matches today.</p>";
-            }
-        }
-	
 	    
 	function startCountdown(matchNumber, matchDateUtc) {
 	    const countdownEl = document.getElementById(`countdown-${matchNumber}-ist`);
