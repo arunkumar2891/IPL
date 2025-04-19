@@ -136,7 +136,36 @@
             }
         }
 		
+	//fetchLeaderboard();
+	
+        async function fetchLeaderboard() {
+	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
+	const BID_TOKEN = window.env.BID_TOKEN;
+        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN)}`; // Replace with actual API endpoint
+            try {
+                const response = await fetch(LEADERBOARD_API_URL);
+                if (!response.ok) throw new Error("Failed to fetch.");
+                console.log("3");
+                const data = await response.json();
+		console.log(data);
+                displayLeaderboard(data.response);
+            } catch (error) {
+                console.error("Leaderboard Fetch Error:", error);
+                alert("Fetch Error. Please try again.");
+            }
+        }
 
+        function displayLeaderboard(data) {
+            const leaderboardDiv = document.getElementById("leaderboard");
+            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Match Number</th><th>Team Bid</th><th>Group</th></tr>";
+            
+            data.forEach((entry, index) => {
+                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.matchNumber}</td><td>${entry.selectedValue}</td><td>${entry.group}</td></tr>`;
+            });
+            
+            html += "</table>";
+            leaderboardDiv.innerHTML = html;
+        }
 		
         async function submitPrediction(matchNumber) {
             const email = document.getElementById("emailInput").value.trim().toLowerCase();
