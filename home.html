@@ -192,7 +192,7 @@
 	
 	        if (timeLeft <= 0) {
 	            countdownEl.textContent = "⛔ Submission closed";
-	            submitButton.disabled = true;
+	            //submitButton.disabled = true;
 	            clearInterval(intervalId);
 	        } else {
 	            const hours = String(Math.floor((timeLeft / (1000 * 60 * 60)) % 24)).padStart(2, '0');
