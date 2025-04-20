@@ -104,10 +104,10 @@
         
             matchData.forEach(match => {
                 const matchDate = new Date(match.DateUtc).toISOString().split("T")[0]; // Extract date
-                const submissionAllowed = isSubmissionAllowed(match.DateUtc);
+                const submissionAllowed = true;//isSubmissionAllowed(match.DateUtc);
         
                 if (matchDate === today) {
-                    matchesFound = true;
+                    matchesFound = true
         
                     const matchDiv = document.createElement("div");
                     matchDiv.classList.add("match-container");
