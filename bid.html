@@ -61,6 +61,9 @@
 	
         async function fetchLeaderboard() {
 	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
+	//const BID_TOKEN_DEV = window.env.BID_TOKEN_DEV;
+        //const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN_DEV)}`; // Replace with actual API endpoint
+	
 	const BID_TOKEN = window.env.BID_TOKEN;
         const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN)}`; // Replace with actual API endpoint
             try {
