@@ -61,11 +61,11 @@
 	
         async function fetchLeaderboard() {
 	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
-	//const LEADER_TOKEN_DEV = window.env.LEADER_TOKEN_DEV;
-        //const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/LeaderBoardAPITask?bearer_token=${encodeURIComponent(LEADER_TOKEN_DEV)}`; // Replace with actual API endpoint
+	const LEADER_TOKEN_DEV = window.env.LEADER_TOKEN_DEV;
+        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/LeaderBoardAPITask?bearer_token=${encodeURIComponent(LEADER_TOKEN_DEV)}`; // Replace with actual API endpoint
 		
-	const LEADER_TOKEN = window.env.LEADER_TOKEN;
-        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/LeaderBoard_API?bearer_token=${encodeURIComponent(LEADER_TOKEN)}`; // Replace with actual API endpoint
+	//const LEADER_TOKEN = window.env.LEADER_TOKEN;
+        //const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/LeaderBoard_API?bearer_token=${encodeURIComponent(LEADER_TOKEN)}`; // Replace with actual API endpoint
             try {
                 const response = await fetch(LEADERBOARD_API_URL);
                 if (!response.ok) throw new Error("Failed to fetch leaderboard.");
