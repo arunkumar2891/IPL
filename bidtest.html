@@ -90,11 +90,7 @@
                 const data = await response.json();
 		console.log(data);
                 displayLeaderboard(data.response);
-            } catch (error) {
-                console.error("Leaderboard Fetch Error:", error);
-                alert("Fetch Error. Please try again.");
-            }
-            const stats = {};
+		const stats = {};
             response.response.forEach(({ group, selectedValue, bid }) => {
               const key = `${group}|${selectedValue}`;
               const bidAmount = parseFloat(bid);
@@ -129,6 +125,11 @@
               `;
               tbody.appendChild(tr);
             });
+            } catch (error) {
+                console.error("Leaderboard Fetch Error:", error);
+                alert("Fetch Error. Please try again.");
+            }
+            
         }
         function sortTable(n) {
           const table = document.getElementById("biddingTable");
