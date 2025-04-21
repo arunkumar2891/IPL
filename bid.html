@@ -62,8 +62,6 @@
           <th onclick="sortTable(0)">Group</th>
           <th onclick="sortTable(1)">Team</th>
           <th onclick="sortTable(2)">Count</th>
-          <th onclick="sortTable(3)">Total Bid</th>
-          <th onclick="sortTable(4)">Custom Metric</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -116,8 +114,6 @@
               tr.innerHTML = `
                 <td>${row.group}</td>
                 <td>${row.team}</td>
-                <td>${row.count}</td>
-                <td>${row.totalBid}</td>
                 <td>${row.customMetric}</td>
               `;
               tbody.appendChild(tr);
