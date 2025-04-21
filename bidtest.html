@@ -91,7 +91,7 @@
 		console.log(data);
                 displayLeaderboard(data.response);
 		const stats = {};
-            response.response.forEach(({ group, selectedValue, bid }) => {
+            data.response.forEach(({ group, selectedValue, bid }) => {
               const key = `${group}|${selectedValue}`;
               const bidAmount = parseFloat(bid);
             
