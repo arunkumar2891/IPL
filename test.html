@@ -447,7 +447,9 @@
         	document.getElementById("leaderboardSection").style.display = sectionId === 'leaderboardSection' ? 'block' : 'none';
 
 	       if (sectionId === 'bidDetailsSection') {
-			fetchBidDetailsAndRender();
+			document.addEventListener("DOMContentLoaded", function () {
+    fetchBidDetailsAndRender();
+});
 		}
     	}
     </script>
