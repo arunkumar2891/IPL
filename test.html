@@ -391,6 +391,12 @@
         customMetric: parseFloat((item.totalBid / 20).toFixed(2))
     }));
     const tbody = document.getElementById("tableBody");
+	console.log(tbody);
+
+    if (!tbody) {
+        console.error("tbody element not found");
+        return;
+    }
     tbody.innerHTML = ""; // Clear old rows
 
     result.forEach(row => {
