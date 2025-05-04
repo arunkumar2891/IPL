@@ -354,25 +354,6 @@
               ...item,
               customMetric: parseFloat((item.totalBid / 20).toFixed(2))
             }));*/
-	function fetchBidDetailsAndRender() {
-    // Replace this mock result with your real fetch logic
-	const result = Object.values(stats).map(item => ({
-              ...item,
-              customMetric: parseFloat((item.totalBid / 20).toFixed(2))
-            }));
-    const tbody = document.getElementById("tableBody");
-    tbody.innerHTML = ""; // Clear old rows
-
-    result.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${row.group}</td>
-            <td>${row.team}</td>
-            <td>${row.customMetric}</td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
 
 	    //document.getElementById("bidDetailsSection").style.display = "block";
 
@@ -402,6 +383,25 @@
             }
             
         }
+	function fetchBidDetailsAndRender() {
+    // Replace this mock result with your real fetch logic
+	const result = Object.values(stats).map(item => ({
+              ...item,
+              customMetric: parseFloat((item.totalBid / 20).toFixed(2))
+            }));
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = ""; // Clear old rows
+
+    result.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${row.group}</td>
+            <td>${row.team}</td>
+            <td>${row.customMetric}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
         function sortTable(n) {
           const table = document.getElementById("biddingTable");
           let switching = true, shouldSwitch, rows, x, y, dir = "asc", switchCount = 0;
