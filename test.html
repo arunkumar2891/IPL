@@ -364,13 +364,13 @@
 	    console.log("4");
 	    console.log(result);
             result.forEach(row => {
-              const tr = document.createElement("tr");
+              const trow = document.createElement("tr");
               tr.innerHTML = `
                 <td>${row.group}</td>
                 <td>${row.team}</td>
                 <td>${row.customMetric}</td>
               `;
-	      console.log("tr - ",tr)
+	      console.log("tr - ",tr);
               tbody.appendChild(tr);
             });
             } catch (error) {
