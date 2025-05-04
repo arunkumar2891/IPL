@@ -361,7 +361,7 @@
 	  	if (!tbody) {
 	    		console.error("tableBody element not found");
 	    	return;
-	}
+		}
             //const tbody = document.getElementById("tableBody");
 	    console.log("5");
 	    console.log(result);
@@ -375,6 +375,7 @@
 	      console.log("tr - ",tr);
               tbody.appendChild(tr);
             });
+	});
             } catch (error) {
                 console.error("Bid Details Fetch Error:", error);
                 alert("Fetch Error. Please try again.");
