@@ -278,6 +278,133 @@
         document.getElementById("emailInput").addEventListener("blur", validateEmail);
 	
         displayTodaysMatches();
+	fetchLeaderboard();
+	
+        async function fetchLeaderboard() {
+	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
+	const LEADER_TOKEN_DEV = window.env.LEADER_TOKEN_DEV;
+        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/LeaderBoardAPITask?bearer_token=${encodeURIComponent(LEADER_TOKEN_DEV)}`; // Replace with actual API endpoint
+		
+	//const LEADER_TOKEN = window.env.LEADER_TOKEN;
+        //const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/LeaderBoard_API?bearer_token=${encodeURIComponent(LEADER_TOKEN)}`; // Replace with actual API endpoint
+            try {
+                const response = await fetch(LEADERBOARD_API_URL);
+                if (!response.ok) throw new Error("Failed to fetch leaderboard.");
+                console.log("3");
+                const data = await response.json();
+		console.log(data);
+                displayLeaderboard(data.response);
+            } catch (error) {
+                console.error("Leaderboard Fetch Error:", error);
+                alert("Leaderboard Fetch Error. Please try again.");
+            }
+        }
+
+        function displayLeaderboard(data) {
+            const leaderboardDiv = document.getElementById("leaderboardSection");
+            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Amount</th><th>Group</th><th>As Of</th></tr>";
+            
+            data.forEach((entry, index) => {
+                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.Amount}</td><td>${entry.Group}</td><td>Match ${entry.matchNumber}</td></tr>`;
+            });
+            
+            html += "</table>";
+            leaderboardDiv.innerHTML = html;
+        }
+	fetchBid();
+	
+        async function fetchBid() {
+	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
+	const BID_TOKEN_DEV = window.env.BID_TOKEN_DEV;
+        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN_DEV)}`; // Replace with actual API endpoint
+	
+	//const BID_TOKEN = window.env.BID_TOKEN;
+        //const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN)}`; // Replace with actual API endpoint
+            try {
+                const response = await fetch(LEADERBOARD_API_URL);
+                if (!response.ok) throw new Error("Failed to fetch.");
+                console.log("3");
+                const data = await response.json();
+		console.log(data);
+                displayBids(data.response);
+		const stats = {};
+            data.response.forEach(({ group, selectedValue, bid }) => {
+              const key = `${group}|${selectedValue}`;
+              const bidAmount = parseFloat(bid);
+            
+              if (!stats[key]) {
+                stats[key] = {
+                  group,
+                  team: selectedValue,
+                  count: 0,
+                  totalBid: 0
+                };
+              }
+            
+              stats[key].count += 1;
+              stats[key].totalBid += bidAmount;
+            });
+            
+            const result = Object.values(stats).map(item => ({
+              ...item,
+              customMetric: parseFloat((item.totalBid / 20).toFixed(2))
+            }));
+            
+            const tbody = document.getElementById("tableBody");
+            result.forEach(row => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${row.group}</td>
+                <td>${row.team}</td>
+                <td>${row.customMetric}</td>
+              `;
+              tbody.appendChild(tr);
+            });
+            } catch (error) {
+                console.error("Leaderboard Fetch Error:", error);
+                alert("Fetch Error. Please try again.");
+            }
+            
+        }
+        function sortTable(n) {
+          const table = document.getElementById("biddingTable");
+          let switching = true, shouldSwitch, rows, x, y, dir = "asc", switchCount = 0;
+        
+          while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (let i = 1; i < rows.length - 1; i++) {
+              shouldSwitch = false;
+              x = rows[i].getElementsByTagName("TD")[n];
+              y = rows[i + 1].getElementsByTagName("TD")[n];
+              if ((dir === "asc" && x.innerHTML > y.innerHTML) ||
+                  (dir === "desc" && x.innerHTML < y.innerHTML)) {
+                shouldSwitch = true;
+                break;
+              }
+            }
+            if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              switchCount++;
+            } else if (switchCount === 0 && dir === "asc") {
+              dir = "desc";
+              switching = true;
+            }
+          }
+        }
+        function displayBids(data) {
+            const leaderboardDiv = document.getElementById("bidDetailsSection");
+            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Match Number</th><th>Team Bid</th><th>Group</th></tr>";
+            
+            data.forEach((entry, index) => {
+                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.matchNumber}</td><td>${entry.selectedValue}</td><td>${entry.group}</td></tr>`;
+            });
+            
+            html += "</table>";
+            leaderboardDiv.innerHTML = html;
+        }
+       
     </script>
 
 </body>
