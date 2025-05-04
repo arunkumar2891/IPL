@@ -350,13 +350,33 @@
               stats[key].totalBid += bidAmount;
             });
             
-            const result = Object.values(stats).map(item => ({
+            /*const result = Object.values(stats).map(item => ({
+              ...item,
+              customMetric: parseFloat((item.totalBid / 20).toFixed(2))
+            }));*/
+	function fetchBidDetailsAndRender() {
+    // Replace this mock result with your real fetch logic
+	const result = Object.values(stats).map(item => ({
               ...item,
               customMetric: parseFloat((item.totalBid / 20).toFixed(2))
             }));
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = ""; // Clear old rows
+
+    result.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${row.group}</td>
+            <td>${row.team}</td>
+            <td>${row.customMetric}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
 	    //document.getElementById("bidDetailsSection").style.display = "block";
 
-	document.addEventListener("DOMContentLoaded", () => {
+	/*document.addEventListener("DOMContentLoaded", () => {
   		const tbody = document.getElementById("tableBody");
 	  	if (!tbody) {
 	    		console.error("tableBody element not found");
@@ -375,7 +395,7 @@
 	      console.log("tr - ",tr);
               tbody.appendChild(tr);
             });
-	});
+	});*/
             } catch (error) {
                 console.error("Bid Details Fetch Error:", error);
                 alert("Fetch Error. Please try again.");
@@ -424,6 +444,10 @@
 		document.getElementById("bidDetailsSection").style.display = sectionId === 'bidDetailsSection' ? 'block' : 'none';
         	document.getElementById("bidsSection").style.display = sectionId === 'bidsSection' ? 'block' : 'none';
         	document.getElementById("leaderboardSection").style.display = sectionId === 'leaderboardSection' ? 'block' : 'none';
+
+	       if (sectionId === 'bidDetailsSection') {
+			fetchBidDetailsAndRender();
+		}
     	}
     </script>
 
