@@ -68,8 +68,9 @@
     <p id="emailError" class="error"></p>
     <!-- Navigation Menu -->
 <div style="margin-bottom: 20px;">
-    <button onclick="showSection('bidsSection')" style="padding: 10px 15px;">🏏 Bid Details</button>
-    <button onclick="showSection('leaderboardSection')" style="padding: 10px 15px;">📊 Leaderboard</button>
+    <button onclick="showSection('bidsSection')" style="padding: 10px 15px;">Submit Bid</button>
+    <button onclick="showSection('leaderboardSection')" style="padding: 10px 15px;">Leaderboard</button>
+   <button onclick="showSection('bidDetailsSection')" style="padding: 10px 15px;">Bid Details</button>
 </div>
 
 <!-- Section: Bid Submission -->
@@ -80,7 +81,11 @@
 
 <!-- Section: Leaderboard (Initially Hidden) -->
 <div id="leaderboardSection" style="display: none;">
-    <h2>Leaderboard</h2>
+    <h2>IPL Prediction Game - Leaderboard</h2>
+    <p>Coming soon... or dynamically loaded</p>
+</div>
+<div id="bidDetailsSection" style="display: none;">
+    <h2>IPL Prediction Game - Bidding Details</h2>
     <p>Coming soon... or dynamically loaded</p>
 </div>
     <p><strong>Status:</strong></p>
@@ -89,6 +94,7 @@
     <script src="/env.js"></script>
     <script>
 	function showSection(sectionId) {
+		document.getElementById("bidDetailsSection").style.display = sectionId === 'bidDetailsSection' ? 'block' : 'none';
         	document.getElementById("bidsSection").style.display = sectionId === 'bidsSection' ? 'block' : 'none';
         	document.getElementById("leaderboardSection").style.display = sectionId === 'leaderboardSection' ? 'block' : 'none';
     	}
