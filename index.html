@@ -9,10 +9,10 @@
             font-family: Arial, sans-serif;
             margin: 20px;
             padding: 20px;
-	    background-color: white;
-	    color: #0047AB;
+	    background-color: #0047AB;
+	    color: white;
         }.h3color{
-	   color: maroon;
+	   color: white;
 	}
         .error {
             color: red;
@@ -23,8 +23,8 @@
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 5px;
-	    background-color: #0047AB;
-	    color: white;
+	    background-color: white;
+	    color: #0047AB;
         }
 	.headerContainer {
             border: 1px solid #ddd;
@@ -32,24 +32,21 @@
             margin-bottom: 20px;
             border-radius: 5px;
 	    background-color: white;
-	    color: maroon;
+	    color: white;
         }
 	table { 
     	    width: 100%; 
     	    border-collapse: collapse; 
    	    margin-top: 10px; 
 	}
-
 	th, td { 
 	    border: 2px solid black; /* Added a thicker border */
-	    padding: 8px; 
-	    text-align: center; 
+	    padding: 1px; 
+	    text-align: left; 
 	}
-	
 	th { 
 	    background-color: #0047AB; 
 	}
-	
 	.highlight { 
 	    background-color: yellow; 
 	    font-weight: bold; 
@@ -61,20 +58,56 @@
 
     <h2>IPL Prediction Game</h2>
     <div id="headerContainer">
-    <h3 id="h3colors" class="h3color">All entries should be submitted before 15 minutes of the first ball and the submition will be disabled 15 minutes before the first ball. Multiple bids will be allowed and the latest bid will be considered from 22nd April 2025.</h3>
+    <h3 id="h3colors" class="h3color">All entries should be submitted before 15 minutes of the first ball and the submition will be disabled 15 minutes before the first ball. Multiple bids will be allowed and the latest bid will be considered.</h3>
     </div>
     <label for="emailInput">Enter your Email:</label>
     <input type="text" id="emailInput" placeholder="Enter your email">
     <p id="emailError" class="error"></p>
+    <!-- Navigation Menu -->
+<div style="margin-bottom: 20px;">
+    <button onclick="showSection('bidsSection')" style="padding: 10px 15px;">Submit Bid</button>
+    <button onclick="showSection('leaderboardSection')" style="padding: 10px 15px;">Leaderboard</button>
+   <button onclick="showSection('bidDetailsSection')" style="padding: 10px 15px;">Bid Details</button>
+</div>
 
+<!-- Section: Bid Submission -->
+<div id="bidsSection">
+    <!-- Existing bid submission content remains as-is -->
     <div id="matchContainer"></div>
-
     <p><strong>Status:</strong></p>
     <div id="apiResponse"></div>
-    <div id="leaderboard"></div>
+</div> <!-- Close #bidsSection -->
+
+<!-- Section: Leaderboard (Initially Hidden) -->
+<div id="leaderboardSection" style="display: none;">
+    <h2>IPL Prediction Game - Leaderboard</h2>
+    <p>Coming soon... or dynamically loaded</p>
+</div>
+<div id="bidDetailsSection" style="display: none;">
+    <h2>IPL Prediction Game - Bidding Details</h2>
+    <p>Coming soon... or dynamically loaded</p>
+    
+</div>
+	 <table id="biddingTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Group</th>
+          <th onclick="sortTable(1)">Team</th>
+          <th onclick="sortTable(2)">Count</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+	<tr>
+          <td>N/A</td>
+          <td>N/A</td>
+          <td>N/A</td>
+        </tr>
+      </tbody>
+    </table>
+    <!--<div id="leaderboard"></div>-->
     <script src="/env.js"></script>
     <script>
-	
+	let stats = {};
         const validEmails = ["arjunsuresh2104@gmail.com","iamarunkumor@gmail.com","adhivm@gmail.com","rbala045@gmail.com","charanmohan05@gmail.com","gopi13karthick@gmail.com","nw.gowtham@gmail.com","harisriram.h14@gmail.com","sriniha2.dec06@gmail.com","kishorezum07@gmail.com","midun.mib@gmail.com","naveenalexisit@gmail.com","prabhud465@gmail.com","sathya.it39@gmail.com","sethusandhiya44@gmail.com","sri.true@gmail.com","sundarster@gmail.com","venkat1979gc@gmail.com","isudarsan93@gmail.com","vinay.baskie@gmail.com","vijay.raghavan4321@gmail.com","parthiece08@gmail.com","singh.ajaykumar@gmail.com","ashsubram@gmail.com","lord.deeps@gmail.com","mailjisjoseph@gmail.com","matrixmohanbabu@gmail.com","skaran1988@gmail.com","prash.cts@gmail.com","ramya.cse2@gmail.com","srinivaskumar.mv30@gmail.com","vedantvyas91@gmail.com","parthiece08@gmail.com"]; // Allowed emails
 	const API_TOKEN_DEV = window.env.API_TOKEN_DEV;
         const API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/GetDataTask?bearer_token=${encodeURIComponent(API_TOKEN_DEV)}`; // Replace with your actual API URL
@@ -255,6 +288,179 @@
         document.getElementById("emailInput").addEventListener("blur", validateEmail);
 	
         displayTodaysMatches();
+	fetchLeaderboard();
+	
+        async function fetchLeaderboard() {
+	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
+	const LEADER_TOKEN_DEV = window.env.LEADER_TOKEN_DEV;
+        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/LeaderBoardAPITask?bearer_token=${encodeURIComponent(LEADER_TOKEN_DEV)}`; // Replace with actual API endpoint
+		
+	//const LEADER_TOKEN = window.env.LEADER_TOKEN;
+        //const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/LeaderBoard_API?bearer_token=${encodeURIComponent(LEADER_TOKEN)}`; // Replace with actual API endpoint
+            try {
+                const response = await fetch(LEADERBOARD_API_URL);
+                if (!response.ok) throw new Error("Failed to fetch leaderboard.");
+                console.log("3");
+                const data = await response.json();
+		console.log("Leader",data);
+                displayLeaderboard(data.response);
+            } catch (error) {
+                console.error("Leaderboard Fetch Error:", error);
+                alert("Leaderboard Fetch Error. Please try again.");
+            }
+        }
+
+        function displayLeaderboard(data) {
+            const leaderboardDiv = document.getElementById("leaderboardSection");
+            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Amount</th><th>Group</th><th>As Of</th></tr>";
+            
+            data.forEach((entry, index) => {
+                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.Amount}</td><td>${entry.Group}</td><td>Match ${entry.matchNumber}</td></tr>`;
+            });
+            
+            html += "</table>";
+            leaderboardDiv.innerHTML = html;
+        }
+	fetchBid();
+	
+        async function fetchBid() {
+	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
+	const BID_TOKEN_DEV = window.env.BID_TOKEN_DEV;
+        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN_DEV)}`; // Replace with actual API endpoint
+	
+	//const BID_TOKEN = window.env.BID_TOKEN;
+        //const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN)}`; // Replace with actual API endpoint
+            try {
+                const response = await fetch(LEADERBOARD_API_URL);
+                if (!response.ok) throw new Error("Failed to fetch.");
+                console.log("4");
+                const data = await response.json();
+		console.log("Bids",data);
+                displayBids(data.response);
+		stats = {};
+            data.response.forEach(({ group, selectedValue, bid }) => {
+              const key = `${group}|${selectedValue}`;
+              const bidAmount = parseFloat(bid);
+            
+              if (!stats[key]) {
+                stats[key] = {
+                  group,
+                  team: selectedValue,
+                  count: 0,
+                  totalBid: 0
+                };
+              }
+            
+              stats[key].count += 1;
+              stats[key].totalBid += bidAmount;
+            });
+            
+            /*const result = Object.values(stats).map(item => ({
+              ...item,
+              customMetric: parseFloat((item.totalBid / 20).toFixed(2))
+            }));*/
+
+	    //document.getElementById("bidDetailsSection").style.display = "block";
+
+	/*document.addEventListener("DOMContentLoaded", () => {
+  		const tbody = document.getElementById("tableBody");
+	  	if (!tbody) {
+	    		console.error("tableBody element not found");
+	    	return;
+		}
+            //const tbody = document.getElementById("tableBody");
+	    console.log("5");
+	    console.log(result);
+            result.forEach(row => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${row.group}</td>
+                <td>${row.team}</td>
+                <td>${row.customMetric}</td>
+              `;
+	      console.log("tr - ",tr);
+              tbody.appendChild(tr);
+            });
+	});*/
+            } catch (error) {
+                console.error("Bid Details Fetch Error:", error);
+                alert("Fetch Error. Please try again.");
+            }
+            
+        }
+	function fetchBidDetailsAndRender() {
+    // Replace this mock result with your real fetch logic
+    const result = Object.values(stats).map(item => ({
+        ...item,
+        customMetric: parseFloat((item.totalBid / 20).toFixed(2))
+    }));
+    const tbody = document.getElementById("tableBody");
+	console.log(tbody);
+
+    if (!tbody) {
+        console.error("tbody element not found");
+        return;
+    }
+    tbody.innerHTML = ""; // Clear old rows
+
+    result.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${row.group}</td>
+            <td>${row.team}</td>
+            <td>${row.customMetric}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+        function sortTable(n) {
+          const table = document.getElementById("biddingTable");
+          let switching = true, shouldSwitch, rows, x, y, dir = "asc", switchCount = 0;
+        
+          while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (let i = 1; i < rows.length - 1; i++) {
+              shouldSwitch = false;
+              x = rows[i].getElementsByTagName("TD")[n];
+              y = rows[i + 1].getElementsByTagName("TD")[n];
+              if ((dir === "asc" && x.innerHTML > y.innerHTML) ||
+                  (dir === "desc" && x.innerHTML < y.innerHTML)) {
+                shouldSwitch = true;
+                break;
+              }
+            }
+            if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              switchCount++;
+            } else if (switchCount === 0 && dir === "asc") {
+              dir = "desc";
+              switching = true;
+            }
+          }
+        }
+        function displayBids(data) {
+            const leaderboardDiv = document.getElementById("bidDetailsSection");
+            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Match Number</th><th>Team Bid</th><th>Group</th></tr>";
+            
+            data.forEach((entry, index) => {
+                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.matchNumber}</td><td>${entry.selectedValue}</td><td>${entry.group}</td></tr>`;
+            });
+            
+            html += "</table>";
+            leaderboardDiv.innerHTML = html;
+        }
+       function showSection(sectionId) {
+		document.getElementById("bidDetailsSection").style.display = sectionId === 'bidDetailsSection' ? 'block' : 'none';
+        	document.getElementById("bidsSection").style.display = sectionId === 'bidsSection' ? 'block' : 'none';
+        	document.getElementById("leaderboardSection").style.display = sectionId === 'leaderboardSection' ? 'block' : 'none';
+
+	       if (sectionId === 'bidDetailsSection') {
+    fetchBidDetailsAndRender();
+		}
+    	}
     </script>
 
 </body>
