@@ -103,6 +103,7 @@
     <!--<div id="leaderboard"></div>-->
     <script src="/env.js"></script>
     <script>
+	let stats = {};
         const validEmails = ["arjunsuresh2104@gmail.com","iamarunkumor@gmail.com","adhivm@gmail.com","rbala045@gmail.com","charanmohan05@gmail.com","gopi13karthick@gmail.com","nw.gowtham@gmail.com","harisriram.h14@gmail.com","sriniha2.dec06@gmail.com","kishorezum07@gmail.com","midun.mib@gmail.com","naveenalexisit@gmail.com","prabhud465@gmail.com","sathya.it39@gmail.com","sethusandhiya44@gmail.com","sri.true@gmail.com","sundarster@gmail.com","venkat1979gc@gmail.com","isudarsan93@gmail.com","vinay.baskie@gmail.com","vijay.raghavan4321@gmail.com","parthiece08@gmail.com","singh.ajaykumar@gmail.com","ashsubram@gmail.com","lord.deeps@gmail.com","mailjisjoseph@gmail.com","matrixmohanbabu@gmail.com","skaran1988@gmail.com","prash.cts@gmail.com","ramya.cse2@gmail.com","srinivaskumar.mv30@gmail.com","vedantvyas91@gmail.com","parthiece08@gmail.com"]; // Allowed emails
 	const API_TOKEN_DEV = window.env.API_TOKEN_DEV;
         const API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/GetDataTask?bearer_token=${encodeURIComponent(API_TOKEN_DEV)}`; // Replace with your actual API URL
@@ -332,7 +333,7 @@
                 const data = await response.json();
 		console.log("Bids",data);
                 displayBids(data.response);
-		const stats = {};
+		stats = {};
             data.response.forEach(({ group, selectedValue, bid }) => {
               const key = `${group}|${selectedValue}`;
               const bidAmount = parseFloat(bid);
