@@ -302,7 +302,7 @@
                 if (!response.ok) throw new Error("Failed to fetch leaderboard.");
                 console.log("3");
                 const data = await response.json();
-		console.log(data);
+		console.log("Leader",data);
                 displayLeaderboard(data.response);
             } catch (error) {
                 console.error("Leaderboard Fetch Error:", error);
@@ -333,9 +333,9 @@
             try {
                 const response = await fetch(LEADERBOARD_API_URL);
                 if (!response.ok) throw new Error("Failed to fetch.");
-                console.log("3");
+                console.log("5");
                 const data = await response.json();
-		console.log(data);
+		console.log("Bids",data);
                 displayBids(data.response);
 		const stats = {};
             data.response.forEach(({ group, selectedValue, bid }) => {
@@ -374,7 +374,7 @@
               tbody.appendChild(tr);
             });
             } catch (error) {
-                console.error("Leaderboard Fetch Error:", error);
+                console.error("Bid Details Fetch Error:", error);
                 alert("Fetch Error. Please try again.");
             }
             
