@@ -89,6 +89,16 @@
 <div id="bidDetailsSection" style="display: none;">
     <h2>IPL Prediction Game - Bidding Details</h2>
     <p>Coming soon... or dynamically loaded</p>
+     <table id="biddingTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Group</th>
+          <th onclick="sortTable(1)">Team</th>
+          <th onclick="sortTable(2)">Count</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
 </div>
     <!--<div id="leaderboard"></div>-->
     <script src="/env.js"></script>
