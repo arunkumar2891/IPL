@@ -76,6 +76,7 @@
     <div id="matchContainer"></div>
     <p><strong>Status:</strong></p>
     <div id="apiResponse"></div>
+    <div id="nextMatchTimer" style="text-align:center; margin-top: 20px; font-size: 18px;">⏳ Time until next match: <span id="countdown"></span></div>
 </div> <!-- Close #bidsSection -->
 
 <!-- Section: Leaderboard (Initially Hidden) -->
@@ -461,6 +462,28 @@
     fetchBidDetailsAndRender();
 		}
     	}
+  const nextMatchTime = new Date('2025-05-17T14:00:00Z'); // 7:30 PM IST is 14:00 UTC
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = nextMatchTime - now;
+
+    if (diff <= 0) {
+      document.getElementById("countdown").innerText = "It's match time! 🏏";
+      clearInterval(timer);
+      return;
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById("countdown").innerText =
+      `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  const timer = setInterval(updateCountdown, 1000);
+  updateCountdown(); // Run once immediately
     </script>
 
 </body>
