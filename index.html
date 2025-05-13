@@ -51,7 +51,48 @@
 	    background-color: yellow; 
 	    font-weight: bold; 
 	}
+	.timer-container {
+    text-align: center;
+    margin-top: 30px;
+    font-family: 'Segoe UI', sans-serif;
+  }
 
+  .timer-container h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+
+  .timer-box {
+    display: inline-flex;
+    justify-content: center;
+    gap: 20px;
+    background: #fff8e1;
+    padding: 20px 35px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .timer-box div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 2rem;
+    color: #d35400;
+    min-width: 80px;
+  }
+
+  .timer-box small {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-top: 4px;
+  }
+
+  .timer-note {
+    margin-top: 12px;
+    color: #444;
+    font-size: 1rem;
+  }
     </style>
 </head>
 <body>
@@ -76,7 +117,17 @@
     <div id="matchContainer"></div>
     <p><strong>Status:</strong></p>
     <div id="apiResponse"></div>
-    <div id="nextMatchTimer" style="text-align:center; margin-top: 20px; font-size: 18px;">⏳ Time until next match: <span id="countdown"></span></div>
+    <div id="nextMatchTimer" class="timer-container">
+  <h3>⏳ Next Match Countdown</h3>
+  <div class="timer-box">
+    <div><span id="days">--</span><small>Days</small></div>
+    <div><span id="hours">--</span><small>Hours</small></div>
+    <div><span id="minutes">--</span><small>Minutes</small></div>
+    <div><span id="seconds">--</span><small>Seconds</small></div>
+  </div>
+  <p class="timer-note">🏏 Get your jerseys ready — the action returns soon!</p>
+</div>
+	<!--<div id="nextMatchTimer" style="text-align:center; margin-top: 20px; font-size: 18px;">⏳ Time until next match: <span id="countdown"></span></div>-->
 </div> <!-- Close #bidsSection -->
 
 <!-- Section: Leaderboard (Initially Hidden) -->
@@ -462,7 +513,7 @@
     fetchBidDetailsAndRender();
 		}
     	}
-  const nextMatchTime = new Date('2025-05-17T14:00:00Z'); // 7:30 PM IST is 14:00 UTC
+  /*const nextMatchTime = new Date('2025-05-17T14:00:00Z'); // 7:30 PM IST is 14:00 UTC
 
   function updateCountdown() {
     const now = new Date();
@@ -483,7 +534,32 @@
   }
 
   const timer = setInterval(updateCountdown, 1000);
-  updateCountdown(); // Run once immediately
+  updateCountdown(); // Run once immediately*/
+	    const nextMatchTime = new Date('2025-05-17T14:00:00Z'); // Update to actual match time
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = nextMatchTime - now;
+
+    if (diff <= 0) {
+      document.querySelector('.timer-box').innerHTML = "🎉 It's match time!";
+      clearInterval(timer);
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    document.getElementById("days").textContent = String(days).padStart(2, '0');
+    document.getElementById("hours").textContent = String(hours).padStart(2, '0');
+    document.getElementById("minutes").textContent = String(minutes).padStart(2, '0');
+    document.getElementById("seconds").textContent = String(seconds).padStart(2, '0');
+  }
+
+  const timer = setInterval(updateCountdown, 1000);
+  updateCountdown();
     </script>
 
 </body>
