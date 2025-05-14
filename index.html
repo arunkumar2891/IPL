@@ -93,6 +93,32 @@
     color: #444;
     font-size: 1rem;
   }
+ #matchesTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-family: Arial, sans-serif;
+    background: #fdfcf7;
+  }
+
+  #matchesTable th {
+    background-color: #f39c12;
+    color: white;
+    text-align: left;
+  }
+
+  #matchesTable td, #matchesTable th {
+    padding: 12px;
+    border: 1px solid #ddd;
+  }
+
+  #matchesTable tr:nth-child(even) {
+    background-color: #fffaf0;
+  }
+
+  #matchesTable tr:hover {
+    background-color: #f1f1f1;
+  }
     </style>
 </head>
 <body>
@@ -156,6 +182,25 @@
         </tr>
       </tbody>
     </table>
+
+    <div id="upcomingMatches">
+  <h2>🏏 Upcoming IPL Matches</h2>
+  <table id="matchesTable" border="1" cellpadding="10">
+    <thead>
+      <tr>
+        <th>Match #</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Venue</th>
+        <th>Home Team</th>
+        <th>Away Team</th>
+      </tr>
+    </thead>
+    <tbody id="matchesBody">
+      <!-- Rows will be populated by JS -->
+    </tbody>
+  </table>
+</div>	
     <!--<div id="leaderboard"></div>-->
     <script src="/env.js"></script>
     <script>
@@ -560,6 +605,44 @@
 
   const timer = setInterval(updateCountdown, 1000);
   updateCountdown();
+  const remainingFixtures = [/* paste your full JSON here */];
+
+  function renderUpcomingMatches() {
+    const now = new Date();
+    const tableBody = document.getElementById("matchesBody");
+    tableBody.innerHTML = ""; // Clear any existing rows
+
+    const upcoming = remainingFixtures.filter(match => {
+      const matchDate = new Date(match.DateUtc);
+      // Only include future or today’s matches
+      return matchDate >= new Date(now.toDateString());
+    });
+
+    if (upcoming.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center">🎉 No more matches remaining!</td></tr>`;
+      return;
+    }
+
+    upcoming.forEach(match => {
+      const dateObj = new Date(match.DateUtc);
+      const dateStr = dateObj.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+      const timeStr = dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: true });
+
+      const row = `
+        <tr>
+          <td>${match.MatchNumber}</td>
+          <td>${dateStr}</td>
+          <td>${timeStr}</td>
+          <td>${match.Location}</td>
+          <td>${match.HomeTeam}</td>
+          <td>${match.AwayTeam}</td>
+        </tr>
+      `;
+      tableBody.insertAdjacentHTML("beforeend", row);
+    });
+  }
+
+  renderUpcomingMatches();
     </script>
 
 </body>
