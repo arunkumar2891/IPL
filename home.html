@@ -11,7 +11,9 @@
             padding: 20px;
 	    background-color: #0047AB;
 	    color: white;
-        }
+        }.h3color{
+	   color: white;
+	}
         .error {
             color: red;
             font-size: 14px;
@@ -23,61 +25,174 @@
             border-radius: 5px;
 	    background-color: white;
 	    color: #0047AB;
-        }.h3color{
-	   color: maroon;
-	}
+        }
+	.headerContainer {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+	    background-color: white;
+	    color: white;
+        }
 	table { 
-    	    width: 100%; 
+    	    width: 90%; 
     	    border-collapse: collapse; 
    	    margin-top: 10px; 
 	}
-
 	th, td { 
 	    border: 2px solid black; /* Added a thicker border */
-	    padding: 8px; 
-	    text-align: center; 
+	    padding: 1px; 
+	    text-align: left; 
 	}
-	
 	th { 
 	    background-color: #0047AB; 
 	}
-	
 	.highlight { 
 	    background-color: yellow; 
 	    font-weight: bold; 
 	}
+	.timer-container {
+    text-align: center;
+    margin-top: 30px;
+    font-family: 'Segoe UI', sans-serif;
+  }
 
+  .timer-container h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+
+  .timer-box {
+    display: inline-flex;
+    justify-content: center;
+    gap: 20px;
+    background: #fff8e1;
+    padding: 20px 35px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .timer-box div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 2rem;
+    color: #d35400;
+    width: 100%;
+  }
+
+  .timer-box small {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-top: 4px;
+  }
+
+  .timer-note {
+    margin-top: 12px;
+    color: #444;
+    font-size: 1rem;
+  }
     </style>
 </head>
 <body>
 
     <h2>IPL Prediction Game</h2>
-    <h3 id="h3color">All entries should be submitted before 15 minutes of the first ball. All entries after the cut-off time will be considered default and be assigned to the losing team.</h3>
+    <div id="headerContainer">
+    <h3 id="h3colors" class="h3color">All entries should be submitted before 15 minutes of the first ball and the submition will be disabled 15 minutes before the first ball. Multiple bids will be allowed and the latest bid will be considered.</h3>
+    </div>
     <label for="emailInput">Enter your Email:</label>
     <input type="text" id="emailInput" placeholder="Enter your email">
     <p id="emailError" class="error"></p>
+    <!-- Navigation Menu -->
+<div style="margin-bottom: 20px;">
+    <button onclick="showSection('bidsSection')" style="padding: 10px 15px;">Submit Bid</button>
+    <button onclick="showSection('leaderboardSection')" style="padding: 10px 15px;">Leaderboard</button>
+   <button onclick="showSection('bidDetailsSection')" style="padding: 10px 15px;">Bid Details</button>
+</div>
 
+<!-- Section: Bid Submission -->
+<div id="bidsSection">
+    <!-- Existing bid submission content remains as-is -->
     <div id="matchContainer"></div>
-
     <p><strong>Status:</strong></p>
     <div id="apiResponse"></div>
-    <div id="leaderboard"></div>
+    <div id="nextMatchTimer" class="timer-container">
+  <h3 style="color: white">⏳ Next Match Countdown</h3>
+  <div class="timer-box">
+    <div><span id="days">--</span><small>Days</small></div>
+    <div><span id="hours">--</span><small>Hours</small></div>
+    <div><span id="minutes">--</span><small>Minutes</small></div>
+    <div><span id="seconds">--</span><small>Seconds</small></div>
+  </div>
+  <p class="timer-note" style="color: white">🏏 Get your jerseys ready — the action returns soon!</p>
+</div>
+	<!--<div id="nextMatchTimer" style="text-align:center; margin-top: 20px; font-size: 18px;">⏳ Time until next match: <span id="countdown"></span></div>-->
+</div> <!-- Close #bidsSection -->
+
+<!-- Section: Leaderboard (Initially Hidden) -->
+<div id="leaderboardSection" style="display: none;">
+    <h2>IPL Prediction Game - Leaderboard</h2>
+    <p>Summoning cricket stats from the cloud… brace yourself!</p>
+</div>
+<div id="bidDetailsSection" style="display: none;">
+    <h2>IPL Prediction Game - Bidding Details</h2>
+    <p>Hold on to your wickets… loading the magic!</p>
+    
+</div>
+	 <table id="biddingTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Group</th>
+          <th onclick="sortTable(1)">Team</th>
+          <th onclick="sortTable(2)">Count</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+	<tr>
+          <td>Hold your horses, captain!</td>
+          <td>This page is still in the dugout</td>
+          <td>it'll hit the crease when the innings begins.</td>
+        </tr>
+      </tbody>
+    </table>
+	
+    <div id="upcomingMatches">
+  <h2>🏏 Upcoming IPL Matches</h2>
+  <table id="matchesTable" border="1" cellpadding="10">
+    <thead>
+      <tr>
+        <th>Match #</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Venue</th>
+        <th>Home Team</th>
+        <th>Away Team</th>
+      </tr>
+    </thead>
+    <tbody id="matchesBody">
+      <!-- Rows will be populated by JS -->
+    </tbody>
+  </table>
+</div>
+    <!--<div id="leaderboard"></div>-->
     <script src="/env.js"></script>
     <script>
-	
+	let stats = {};
         const validEmails = ["arjunsuresh2104@gmail.com","iamarunkumor@gmail.com","adhivm@gmail.com","rbala045@gmail.com","charanmohan05@gmail.com","gopi13karthick@gmail.com","nw.gowtham@gmail.com","harisriram.h14@gmail.com","sriniha2.dec06@gmail.com","kishorezum07@gmail.com","midun.mib@gmail.com","naveenalexisit@gmail.com","prabhud465@gmail.com","sathya.it39@gmail.com","sethusandhiya44@gmail.com","sri.true@gmail.com","sundarster@gmail.com","venkat1979gc@gmail.com","isudarsan93@gmail.com","vinay.baskie@gmail.com","vijay.raghavan4321@gmail.com","parthiece08@gmail.com","singh.ajaykumar@gmail.com","ashsubram@gmail.com","lord.deeps@gmail.com","mailjisjoseph@gmail.com","matrixmohanbabu@gmail.com","skaran1988@gmail.com","prash.cts@gmail.com","ramya.cse2@gmail.com","srinivaskumar.mv30@gmail.com","vedantvyas91@gmail.com","parthiece08@gmail.com"]; // Allowed emails
-	
 	const API_TOKEN_DEV = window.env.API_TOKEN_DEV;
-        const API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/getData?bearer_token=${encodeURIComponent(API_TOKEN_DEV)}`; // Replace with your actual API URL
-	const matchData = [{"MatchNumber":1,"RoundNumber":1,"DateUtc":"2025-03-22 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":2,"RoundNumber":1,"DateUtc":"2025-03-23 10:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":3,"RoundNumber":1,"DateUtc":"2025-03-23 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":4,"RoundNumber":1,"DateUtc":"2025-03-24 14:00:00Z","Location":"Dr YS Rajasekhara Reddy ACA-VDCA Cricket Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":5,"RoundNumber":1,"DateUtc":"2025-03-25 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":6,"RoundNumber":1,"DateUtc":"2025-03-26 14:00:00Z","Location":"ACA Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":7,"RoundNumber":1,"DateUtc":"2025-03-27 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":8,"RoundNumber":1,"DateUtc":"2025-03-28 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":9,"RoundNumber":2,"DateUtc":"2025-03-29 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":10,"RoundNumber":2,"DateUtc":"2025-03-30 10:00:00Z","Location":"Dr YS Rajasekhara Reddy ACA-VDCA Cricket Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":11,"RoundNumber":2,"DateUtc":"2025-03-30 14:00:00Z","Location":"ACA Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":12,"RoundNumber":2,"DateUtc":"2025-03-31 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":13,"RoundNumber":2,"DateUtc":"2025-04-01 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":14,"RoundNumber":2,"DateUtc":"2025-04-02 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":15,"RoundNumber":2,"DateUtc":"2025-04-03 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":16,"RoundNumber":2,"DateUtc":"2025-04-04 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":17,"RoundNumber":3,"DateUtc":"2025-04-05 10:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":18,"RoundNumber":3,"DateUtc":"2025-04-05 14:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":19,"RoundNumber":3,"DateUtc":"2025-04-06 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":20,"RoundNumber":3,"DateUtc":"2025-04-07 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":21,"RoundNumber":3,"DateUtc":"2025-04-08 10:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":22,"RoundNumber":3,"DateUtc":"2025-04-08 14:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":23,"RoundNumber":3,"DateUtc":"2025-04-09 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":24,"RoundNumber":3,"DateUtc":"2025-04-10 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":25,"RoundNumber":3,"DateUtc":"2025-04-11 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":26,"RoundNumber":4,"DateUtc":"2025-04-12 10:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":27,"RoundNumber":4,"DateUtc":"2025-04-12 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":28,"RoundNumber":4,"DateUtc":"2025-04-13 10:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":29,"RoundNumber":4,"DateUtc":"2025-04-13 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":30,"RoundNumber":4,"DateUtc":"2025-04-14 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":31,"RoundNumber":4,"DateUtc":"2025-04-15 14:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":32,"RoundNumber":4,"DateUtc":"2025-04-16 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":33,"RoundNumber":4,"DateUtc":"2025-04-17 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":34,"RoundNumber":4,"DateUtc":"2025-04-18 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":35,"RoundNumber":5,"DateUtc":"2025-04-19 10:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":36,"RoundNumber":5,"DateUtc":"2025-04-19 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":37,"RoundNumber":5,"DateUtc":"2025-04-20 10:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":38,"RoundNumber":5,"DateUtc":"2025-04-20 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":39,"RoundNumber":5,"DateUtc":"2025-04-21 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":40,"RoundNumber":5,"DateUtc":"2025-04-22 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":41,"RoundNumber":5,"DateUtc":"2025-04-23 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":42,"RoundNumber":5,"DateUtc":"2025-04-24 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":43,"RoundNumber":5,"DateUtc":"2025-04-25 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":44,"RoundNumber":6,"DateUtc":"2025-04-26 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":45,"RoundNumber":6,"DateUtc":"2025-04-27 10:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":46,"RoundNumber":6,"DateUtc":"2025-04-27 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":47,"RoundNumber":6,"DateUtc":"2025-04-28 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":48,"RoundNumber":6,"DateUtc":"2025-04-29 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":49,"RoundNumber":6,"DateUtc":"2025-04-30 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":50,"RoundNumber":6,"DateUtc":"2025-05-01 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":51,"RoundNumber":6,"DateUtc":"2025-05-02 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":52,"RoundNumber":6,"DateUtc":"2025-05-03 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":53,"RoundNumber":7,"DateUtc":"2025-05-04 10:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":54,"RoundNumber":7,"DateUtc":"2025-05-04 14:00:00Z","Location":"Himachal Pradesh Cricket Association Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":55,"RoundNumber":7,"DateUtc":"2025-05-05 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":56,"RoundNumber":7,"DateUtc":"2025-05-06 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":57,"RoundNumber":7,"DateUtc":"2025-05-07 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":58,"RoundNumber":7,"DateUtc":"2025-05-08 14:00:00Z","Location":"Himachal Pradesh Cricket Association Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":59,"RoundNumber":7,"DateUtc":"2025-05-09 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":60,"RoundNumber":7,"DateUtc":"2025-05-10 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":61,"RoundNumber":7,"DateUtc":"2025-05-11 10:00:00Z","Location":"Himachal Pradesh Cricket Association Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":62,"RoundNumber":8,"DateUtc":"2025-05-11 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":63,"RoundNumber":8,"DateUtc":"2025-05-12 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":64,"RoundNumber":8,"DateUtc":"2025-05-13 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":65,"RoundNumber":8,"DateUtc":"2025-05-14 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":66,"RoundNumber":8,"DateUtc":"2025-05-15 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":67,"RoundNumber":8,"DateUtc":"2025-05-16 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":68,"RoundNumber":8,"DateUtc":"2025-05-17 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":69,"RoundNumber":8,"DateUtc":"2025-05-18 10:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":70,"RoundNumber":8,"DateUtc":"2025-05-18 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":71,"RoundNumber":"NaN","DateUtc":"2025-05-20 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":72,"RoundNumber":"NaN","DateUtc":"2025-05-21 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":73,"RoundNumber":"NaN","DateUtc":"2025-05-23 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":74,"RoundNumber":"NaN","DateUtc":"2025-05-25 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null}];
-	
+        const API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/GetDataTask?bearer_token=${encodeURIComponent(API_TOKEN_DEV)}`; // Replace with your actual API URL
+	//const API_TOKEN = window.env.API_TOKEN;
+        //const API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/getData?bearer_token=${encodeURIComponent(API_TOKEN)}`; // Replace with your actual API URL
+        //const matchData = [{"MatchNumber":1,"RoundNumber":1,"DateUtc":"2025-03-22 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":2,"RoundNumber":1,"DateUtc":"2025-03-23 10:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":3,"RoundNumber":1,"DateUtc":"2025-03-23 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":4,"RoundNumber":1,"DateUtc":"2025-03-24 14:00:00Z","Location":"Dr YS Rajasekhara Reddy ACA-VDCA Cricket Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":5,"RoundNumber":1,"DateUtc":"2025-03-25 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":6,"RoundNumber":1,"DateUtc":"2025-03-26 14:00:00Z","Location":"ACA Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":7,"RoundNumber":1,"DateUtc":"2025-03-27 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":8,"RoundNumber":1,"DateUtc":"2025-03-28 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":9,"RoundNumber":2,"DateUtc":"2025-03-29 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":10,"RoundNumber":2,"DateUtc":"2025-03-30 10:00:00Z","Location":"Dr YS Rajasekhara Reddy ACA-VDCA Cricket Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":11,"RoundNumber":2,"DateUtc":"2025-03-30 14:00:00Z","Location":"ACA Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":12,"RoundNumber":2,"DateUtc":"2025-03-31 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":13,"RoundNumber":2,"DateUtc":"2025-04-01 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":14,"RoundNumber":2,"DateUtc":"2025-04-02 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":15,"RoundNumber":2,"DateUtc":"2025-04-03 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":16,"RoundNumber":2,"DateUtc":"2025-04-04 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":17,"RoundNumber":3,"DateUtc":"2025-04-05 10:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":18,"RoundNumber":3,"DateUtc":"2025-04-05 14:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":19,"RoundNumber":3,"DateUtc":"2025-04-06 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":20,"RoundNumber":3,"DateUtc":"2025-04-07 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":21,"RoundNumber":3,"DateUtc":"2025-04-08 10:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":22,"RoundNumber":3,"DateUtc":"2025-04-08 14:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":23,"RoundNumber":3,"DateUtc":"2025-04-09 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":24,"RoundNumber":3,"DateUtc":"2025-04-10 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":25,"RoundNumber":3,"DateUtc":"2025-04-11 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":26,"RoundNumber":4,"DateUtc":"2025-04-12 10:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":27,"RoundNumber":4,"DateUtc":"2025-04-12 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":28,"RoundNumber":4,"DateUtc":"2025-04-13 10:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":29,"RoundNumber":4,"DateUtc":"2025-04-13 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":30,"RoundNumber":4,"DateUtc":"2025-04-14 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":31,"RoundNumber":4,"DateUtc":"2025-04-15 14:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":32,"RoundNumber":4,"DateUtc":"2025-04-16 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":33,"RoundNumber":4,"DateUtc":"2025-04-17 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":34,"RoundNumber":4,"DateUtc":"2025-04-18 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":35,"RoundNumber":5,"DateUtc":"2025-04-19 10:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":36,"RoundNumber":5,"DateUtc":"2025-04-19 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":37,"RoundNumber":5,"DateUtc":"2025-04-20 10:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":38,"RoundNumber":5,"DateUtc":"2025-04-20 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":39,"RoundNumber":5,"DateUtc":"2025-04-21 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":40,"RoundNumber":5,"DateUtc":"2025-04-22 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":41,"RoundNumber":5,"DateUtc":"2025-04-23 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":42,"RoundNumber":5,"DateUtc":"2025-04-24 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":43,"RoundNumber":5,"DateUtc":"2025-04-25 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":44,"RoundNumber":6,"DateUtc":"2025-04-26 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":45,"RoundNumber":6,"DateUtc":"2025-04-27 10:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":46,"RoundNumber":6,"DateUtc":"2025-04-27 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":47,"RoundNumber":6,"DateUtc":"2025-04-28 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":48,"RoundNumber":6,"DateUtc":"2025-04-29 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":49,"RoundNumber":6,"DateUtc":"2025-04-30 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":50,"RoundNumber":6,"DateUtc":"2025-05-01 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":51,"RoundNumber":6,"DateUtc":"2025-05-02 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":52,"RoundNumber":6,"DateUtc":"2025-05-03 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":53,"RoundNumber":7,"DateUtc":"2025-05-04 10:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":54,"RoundNumber":7,"DateUtc":"2025-05-04 14:00:00Z","Location":"Himachal Pradesh Cricket Association Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":55,"RoundNumber":7,"DateUtc":"2025-05-05 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":56,"RoundNumber":7,"DateUtc":"2025-05-06 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":57,"RoundNumber":7,"DateUtc":"2025-05-07 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":58,"RoundNumber":7,"DateUtc":"2025-05-08 14:00:00Z","Location":"Himachal Pradesh Cricket Association Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":59,"RoundNumber":7,"DateUtc":"2025-05-09 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":60,"RoundNumber":7,"DateUtc":"2025-05-10 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":61,"RoundNumber":7,"DateUtc":"2025-05-11 10:00:00Z","Location":"Himachal Pradesh Cricket Association Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":62,"RoundNumber":8,"DateUtc":"2025-05-11 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":63,"RoundNumber":8,"DateUtc":"2025-05-12 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":64,"RoundNumber":8,"DateUtc":"2025-05-13 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":65,"RoundNumber":8,"DateUtc":"2025-05-14 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":66,"RoundNumber":8,"DateUtc":"2025-05-15 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":67,"RoundNumber":8,"DateUtc":"2025-05-16 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":68,"RoundNumber":8,"DateUtc":"2025-05-17 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":69,"RoundNumber":8,"DateUtc":"2025-05-18 10:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":70,"RoundNumber":8,"DateUtc":"2025-05-18 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":71,"RoundNumber":"NaN","DateUtc":"2025-05-20 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":72,"RoundNumber":"NaN","DateUtc":"2025-05-21 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":73,"RoundNumber":"NaN","DateUtc":"2025-05-23 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":74,"RoundNumber":"NaN","DateUtc":"2025-05-25 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null}];
+	const matchData = [{"MatchNumber":1,"RoundNumber":1,"DateUtc":"2025-03-22 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":2,"RoundNumber":1,"DateUtc":"2025-03-23 10:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":3,"RoundNumber":1,"DateUtc":"2025-03-23 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":4,"RoundNumber":1,"DateUtc":"2025-03-24 14:00:00Z","Location":"Dr YS Rajasekhara Reddy ACA-VDCA Cricket Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":5,"RoundNumber":1,"DateUtc":"2025-03-25 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":6,"RoundNumber":1,"DateUtc":"2025-03-26 14:00:00Z","Location":"ACA Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":7,"RoundNumber":1,"DateUtc":"2025-03-27 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":8,"RoundNumber":1,"DateUtc":"2025-03-28 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":9,"RoundNumber":2,"DateUtc":"2025-03-29 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":10,"RoundNumber":2,"DateUtc":"2025-03-30 10:00:00Z","Location":"Dr YS Rajasekhara Reddy ACA-VDCA Cricket Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":11,"RoundNumber":2,"DateUtc":"2025-03-30 14:00:00Z","Location":"ACA Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":12,"RoundNumber":2,"DateUtc":"2025-03-31 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":13,"RoundNumber":2,"DateUtc":"2025-04-01 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":14,"RoundNumber":2,"DateUtc":"2025-04-02 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":15,"RoundNumber":2,"DateUtc":"2025-04-03 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":16,"RoundNumber":2,"DateUtc":"2025-04-04 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":17,"RoundNumber":3,"DateUtc":"2025-04-05 10:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":18,"RoundNumber":3,"DateUtc":"2025-04-05 14:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":19,"RoundNumber":3,"DateUtc":"2025-04-06 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":20,"RoundNumber":3,"DateUtc":"2025-04-07 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":21,"RoundNumber":3,"DateUtc":"2025-04-08 10:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":22,"RoundNumber":3,"DateUtc":"2025-04-08 14:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":23,"RoundNumber":3,"DateUtc":"2025-04-09 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":24,"RoundNumber":3,"DateUtc":"2025-04-10 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":25,"RoundNumber":3,"DateUtc":"2025-04-11 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":26,"RoundNumber":4,"DateUtc":"2025-04-12 10:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":27,"RoundNumber":4,"DateUtc":"2025-04-12 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":28,"RoundNumber":4,"DateUtc":"2025-04-13 10:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":29,"RoundNumber":4,"DateUtc":"2025-04-13 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":30,"RoundNumber":4,"DateUtc":"2025-04-14 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":31,"RoundNumber":4,"DateUtc":"2025-04-15 14:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":32,"RoundNumber":4,"DateUtc":"2025-04-16 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":33,"RoundNumber":4,"DateUtc":"2025-04-17 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":34,"RoundNumber":4,"DateUtc":"2025-04-18 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":35,"RoundNumber":5,"DateUtc":"2025-04-19 10:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":36,"RoundNumber":5,"DateUtc":"2025-04-19 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":37,"RoundNumber":5,"DateUtc":"2025-04-20 10:00:00Z","Location":"New PCA Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":38,"RoundNumber":5,"DateUtc":"2025-04-20 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":39,"RoundNumber":5,"DateUtc":"2025-04-21 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":40,"RoundNumber":5,"DateUtc":"2025-04-22 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":41,"RoundNumber":5,"DateUtc":"2025-04-23 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":42,"RoundNumber":5,"DateUtc":"2025-04-24 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":43,"RoundNumber":5,"DateUtc":"2025-04-25 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":44,"RoundNumber":6,"DateUtc":"2025-04-26 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":45,"RoundNumber":6,"DateUtc":"2025-04-27 10:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":46,"RoundNumber":6,"DateUtc":"2025-04-27 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":47,"RoundNumber":6,"DateUtc":"2025-04-28 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":48,"RoundNumber":6,"DateUtc":"2025-04-29 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":49,"RoundNumber":6,"DateUtc":"2025-04-30 14:00:00Z","Location":"MA Chidambaram Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":50,"RoundNumber":6,"DateUtc":"2025-05-01 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Mumbai Indians","Group":null},{"MatchNumber":51,"RoundNumber":6,"DateUtc":"2025-05-02 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":52,"RoundNumber":6,"DateUtc":"2025-05-03 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":53,"RoundNumber":7,"DateUtc":"2025-05-04 10:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":54,"RoundNumber":7,"DateUtc":"2025-05-04 14:00:00Z","Location":"Himachal Pradesh Cricket Association Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":55,"RoundNumber":7,"DateUtc":"2025-05-05 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":56,"RoundNumber":7,"DateUtc":"2025-05-06 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Gujarat Titans","Group":null},{"MatchNumber":57,"RoundNumber":7,"DateUtc":"2025-05-07 14:00:00Z","Location":"Eden Gardens","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":58,"RoundNumber":7,"DateUtc":"2025-05-08 14:00:00Z","Location":"Himachal Pradesh Cricket Association Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":59,"RoundNumber":7,"DateUtc":"2025-05-17 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":60,"RoundNumber":7,"DateUtc":"2025-05-18 10:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":61,"RoundNumber":7,"DateUtc":"2025-05-18 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Gujarat Giants","Group":null},{"MatchNumber":62,"RoundNumber":8,"DateUtc":"2025-05-19 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":63,"RoundNumber":8,"DateUtc":"2025-05-20 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":64,"RoundNumber":8,"DateUtc":"2025-05-21 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":65,"RoundNumber":8,"DateUtc":"2025-05-22 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":66,"RoundNumber":8,"DateUtc":"2025-05-23 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":67,"RoundNumber":8,"DateUtc":"2025-05-24 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":68,"RoundNumber":8,"DateUtc":"2025-05-25 10:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":69,"RoundNumber":8,"DateUtc":"2025-05-25 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":70,"RoundNumber":8,"DateUtc":"2025-05-26 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":71,"RoundNumber":8,"DateUtc":"2025-05-26 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":72,"RoundNumber":"NaN","DateUtc":"2025-05-29 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":73,"RoundNumber":"NaN","DateUtc":"2025-05-30 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":74,"RoundNumber":"NaN","DateUtc":"2025-06-01 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":75,"RoundNumber":"NaN","DateUtc":"2025-06-03 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null}];
         function convertToIST(utcDate) {
             const date = new Date(utcDate);
             const istOffset = 5.5 * 60 * 60 * 1000; // Offset for IST (+5:30)
             const istDate = new Date(date.getTime() + istOffset);
             return istDate.toISOString().replace("T", " ").replace(".000Z", "Z");
         }
-
+	
         function validateEmail() {
             const emailInput = document.getElementById("emailInput").value.trim().toLowerCase();
             const emailError = document.getElementById("emailError");
@@ -103,10 +218,10 @@
         
             matchData.forEach(match => {
                 const matchDate = new Date(match.DateUtc).toISOString().split("T")[0]; // Extract date
-                const submissionAllowed = true;//isSubmissionAllowed(match.DateUtc);
+                const submissionAllowed = isSubmissionAllowed(match.DateUtc);
         
                 if (matchDate === today) {
-                    matchesFound = true
+                    matchesFound = true;
         
                     const matchDiv = document.createElement("div");
                     matchDiv.classList.add("match-container");
@@ -124,7 +239,7 @@
                             <input type="radio" name="teamSelect_${match.MatchNumber}" value="${match.AwayTeam}"> ${match.AwayTeam}
                         </label>
                         <br><br>
-			<p id="countdown-${match.MatchNumber}-ist" style="color: #333;"></p>
+			<p id="countdown-${match.MatchNumber}-ist" style="color: #0047AB;"></p>
                         <button id="submit-btn-${match.MatchNumber}" 
                             onclick="submitPrediction(${match.MatchNumber})"
                             ${!submissionAllowed ? 'disabled title="Submission closed for this match"' : ''}>
@@ -132,46 +247,18 @@
                         </button>
                         <p id="match_${match.MatchNumber}_error" class="error"></p>
                     `;
-        	    
+        
                     matchContainer.appendChild(matchDiv);
 		    // Start countdown timer for each match
             	    startCountdown(match.MatchNumber, match.DateUtc);
-		   // ${submissionAllowed} ? fetchLeaderboard() : '';
                 }
             });
         
             if (!matchesFound) {
-                matchContainer.innerHTML = "<p>No matches today.</p>";
+                matchContainer.innerHTML = "<p>No fours, no sixes today — just gratitude flying high for the Indian Army that made this tournament possible again.</p>";
             }
         }
-	 async function fetchLeaderboard() {
-			//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
-			const BID_TOKEN = window.env.BID_TOKEN;
-		        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN)}`; // Replace with actual API endpoint
-		            try {
-		                const response = await fetch(LEADERBOARD_API_URL);
-		                if (!response.ok) throw new Error("Failed to fetch.");
-		                console.log("3");
-		                const data = await response.json();
-				console.log(data);
-		                displayLeaderboard(data.response);
-		            } catch (error) {
-		                console.error("Leaderboard Fetch Error:", error);
-		                alert("Fetch Error. Please try again.");
-		            }
-		        }
-		
-		        function displayLeaderboard(data) {
-		            const leaderboardDiv = document.getElementById("leaderboard");
-		            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Match Number</th><th>Team Bid</th><th>Group</th></tr>";
-		            
-		            data.forEach((entry, index) => {
-		                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.matchNumber}</td><td>${entry.selectedValue}</td><td>${entry.group}</td></tr>`;
-		            });
-		            
-		            html += "</table>";
-		            leaderboardDiv.innerHTML = html;
-		        }
+
 	    
 	function startCountdown(matchNumber, matchDateUtc) {
 	    const countdownEl = document.getElementById(`countdown-${matchNumber}-ist`);
@@ -197,7 +284,7 @@
 	            const hours = String(Math.floor((timeLeft / (1000 * 60 * 60)) % 24)).padStart(2, '0');
 	            const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(2, '0');
 	            const seconds = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, '0');
-		    //fetchLeaderboard();
+	
 	            countdownEl.textContent = `🕒 Time left to submit: ${hours}:${minutes}:${seconds}`;
 	        }
 	    }, 1000);
@@ -272,6 +359,265 @@
         document.getElementById("emailInput").addEventListener("blur", validateEmail);
 	
         displayTodaysMatches();
+	fetchLeaderboard();
+	
+        async function fetchLeaderboard() {
+	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
+	const LEADER_TOKEN_DEV = window.env.LEADER_TOKEN_DEV;
+        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/LeaderBoardAPITask?bearer_token=${encodeURIComponent(LEADER_TOKEN_DEV)}`; // Replace with actual API endpoint
+		
+	//const LEADER_TOKEN = window.env.LEADER_TOKEN;
+        //const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/LeaderBoard_API?bearer_token=${encodeURIComponent(LEADER_TOKEN)}`; // Replace with actual API endpoint
+            try {
+                const response = await fetch(LEADERBOARD_API_URL);
+                if (!response.ok) throw new Error("Failed to fetch leaderboard.");
+                console.log("3");
+                const data = await response.json();
+		console.log("Leader",data);
+                displayLeaderboard(data.response);
+            } catch (error) {
+                console.error("Leaderboard Fetch Error:", error);
+                alert("Leaderboard Fetch Error. Please try again.");
+            }
+        }
+
+        function displayLeaderboard(data) {
+            const leaderboardDiv = document.getElementById("leaderboardSection");
+            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Group</th><th>Total Win Amount</th><th>Win Amount</th><th>As Of</th></tr>";
+            
+            data.forEach((entry, index) => {
+                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.Group}</td><td>${entry.Amount}</td><td>${entry.winAmount}</td><td>Match ${entry.matchNumber}</td></tr>`;
+            });
+            
+            html += "</table>";
+            leaderboardDiv.innerHTML = html;
+        }
+	fetchBid();
+	
+        async function fetchBid() {
+	//const qemail = document.getElementById("emailInput").value.trim().toLowerCase();
+	const BID_TOKEN_DEV = window.env.BID_TOKEN_DEV;
+        const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-dev-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-Dev/projects/Arunkumar%20J%20S/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN_DEV)}`; // Replace with actual API endpoint
+	
+	//const BID_TOKEN = window.env.BID_TOKEN;
+        //const LEADERBOARD_API_URL = `https://prod-paloaltonetworks-qa-cloud-fm.snaplogic.io/api/1/rest/feed-master/queue/PaloAltoNetworks-QA/projects/Arunkumar%20JS/Bid_APITask?bearer_token=${encodeURIComponent(BID_TOKEN)}`; // Replace with actual API endpoint
+            try {
+                const response = await fetch(LEADERBOARD_API_URL);
+                if (!response.ok) throw new Error("Failed to fetch.");
+                console.log("4");
+                const data = await response.json();
+		console.log("Bids",data);
+                displayBids(data.response);
+		stats = {};
+            data.response.forEach(({ group, selectedValue, bid }) => {
+              const key = `${group}|${selectedValue}`;
+              const bidAmount = parseFloat(bid);
+            
+              if (!stats[key]) {
+                stats[key] = {
+                  group,
+                  team: selectedValue,
+                  count: 0,
+                  totalBid: 0
+                };
+              }
+            
+              stats[key].count += 1;
+              stats[key].totalBid += bidAmount;
+            });
+            
+            /*const result = Object.values(stats).map(item => ({
+              ...item,
+              customMetric: parseFloat((item.totalBid / 20).toFixed(2))
+            }));*/
+
+	    //document.getElementById("bidDetailsSection").style.display = "block";
+
+	/*document.addEventListener("DOMContentLoaded", () => {
+  		const tbody = document.getElementById("tableBody");
+	  	if (!tbody) {
+	    		console.error("tableBody element not found");
+	    	return;
+		}
+            //const tbody = document.getElementById("tableBody");
+	    console.log("5");
+	    console.log(result);
+            result.forEach(row => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${row.group}</td>
+                <td>${row.team}</td>
+                <td>${row.customMetric}</td>
+              `;
+	      console.log("tr - ",tr);
+              tbody.appendChild(tr);
+            });
+	});*/
+            } catch (error) {
+                console.error("Bid Details Fetch Error:", error);
+                alert("Fetch Error. Please try again.");
+            }
+            
+        }
+	function fetchBidDetailsAndRender() {
+    // Replace this mock result with your real fetch logic
+    const result = Object.values(stats).map(item => ({
+        ...item,
+        customMetric: parseFloat((item.totalBid / 20).toFixed(2))
+    }));
+    const tbody = document.getElementById("tableBody");
+	console.log(tbody);
+
+    if (!tbody) {
+        console.error("tbody element not found");
+        return;
+    }
+    tbody.innerHTML = ""; // Clear old rows
+
+    result.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${row.group}</td>
+            <td>${row.team}</td>
+            <td>${row.customMetric}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+        function sortTable(n) {
+          const table = document.getElementById("biddingTable");
+          let switching = true, shouldSwitch, rows, x, y, dir = "asc", switchCount = 0;
+        
+          while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (let i = 1; i < rows.length - 1; i++) {
+              shouldSwitch = false;
+              x = rows[i].getElementsByTagName("TD")[n];
+              y = rows[i + 1].getElementsByTagName("TD")[n];
+              if ((dir === "asc" && x.innerHTML > y.innerHTML) ||
+                  (dir === "desc" && x.innerHTML < y.innerHTML)) {
+                shouldSwitch = true;
+                break;
+              }
+            }
+            if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              switchCount++;
+            } else if (switchCount === 0 && dir === "asc") {
+              dir = "desc";
+              switching = true;
+            }
+          }
+        }
+        function displayBids(data) {
+            const leaderboardDiv = document.getElementById("bidDetailsSection");
+            let html = "<table><tr><th>S.No.</th><th>Name</th><th>Match Number</th><th>Team Bid</th><th>Group</th></tr>";
+            
+            data.forEach((entry, index) => {
+                html += `<tr><td>${index + 1}</td><td>${entry.Name}</td><td>${entry.matchNumber}</td><td>${entry.selectedValue}</td><td>${entry.group}</td></tr>`;
+            });
+            
+            html += "</table>";
+            leaderboardDiv.innerHTML = html;
+        }
+       function showSection(sectionId) {
+		document.getElementById("bidDetailsSection").style.display = sectionId === 'bidDetailsSection' ? 'block' : 'none';
+        	document.getElementById("bidsSection").style.display = sectionId === 'bidsSection' ? 'block' : 'none';
+        	document.getElementById("leaderboardSection").style.display = sectionId === 'leaderboardSection' ? 'block' : 'none';
+
+	       if (sectionId === 'bidDetailsSection') {
+    fetchBidDetailsAndRender();
+		}
+    	}
+  /*const nextMatchTime = new Date('2025-05-17T14:00:00Z'); // 7:30 PM IST is 14:00 UTC
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = nextMatchTime - now;
+
+    if (diff <= 0) {
+      document.getElementById("countdown").innerText = "It's match time! 🏏";
+      clearInterval(timer);
+      return;
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById("countdown").innerText =
+      `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  const timer = setInterval(updateCountdown, 1000);
+  updateCountdown(); // Run once immediately*/
+	    const nextMatchTime = new Date('2025-05-17T14:00:00Z'); // Update to actual match time
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = nextMatchTime - now;
+
+    if (diff <= 0) {
+      document.querySelector('.timer-box').innerHTML = "🎉 It's match time!";
+      clearInterval(timer);
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    document.getElementById("days").textContent = String(days).padStart(2, '0');
+    document.getElementById("hours").textContent = String(hours).padStart(2, '0');
+    document.getElementById("minutes").textContent = String(minutes).padStart(2, '0');
+    document.getElementById("seconds").textContent = String(seconds).padStart(2, '0');
+  }
+
+  const timer = setInterval(updateCountdown, 1000);
+  updateCountdown();
+  
+  const remainingFixtures = [{"MatchNumber":59,"RoundNumber":7,"DateUtc":"2025-05-17 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":60,"RoundNumber":7,"DateUtc":"2025-05-18 10:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":61,"RoundNumber":7,"DateUtc":"2025-05-18 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Gujarat Giants","Group":null},{"MatchNumber":62,"RoundNumber":8,"DateUtc":"2025-05-19 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":63,"RoundNumber":8,"DateUtc":"2025-05-20 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":64,"RoundNumber":8,"DateUtc":"2025-05-21 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":65,"RoundNumber":8,"DateUtc":"2025-05-22 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":66,"RoundNumber":8,"DateUtc":"2025-05-23 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":67,"RoundNumber":8,"DateUtc":"2025-05-24 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":68,"RoundNumber":8,"DateUtc":"2025-05-25 10:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":69,"RoundNumber":8,"DateUtc":"2025-05-25 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":70,"RoundNumber":8,"DateUtc":"2025-05-26 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":71,"RoundNumber":8,"DateUtc":"2025-05-26 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":72,"RoundNumber":"NaN","DateUtc":"2025-05-29 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":73,"RoundNumber":"NaN","DateUtc":"2025-05-30 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":74,"RoundNumber":"NaN","DateUtc":"2025-06-01 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":75,"RoundNumber":"NaN","DateUtc":"2025-06-03 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null}];
+
+  function renderUpcomingMatches() {
+    const now = new Date();
+    const tableBody = document.getElementById("matchesBody");
+    tableBody.innerHTML = ""; // Clear any existing rows
+
+    const upcoming = remainingFixtures.filter(match => {
+      const matchDate = new Date(match.DateUtc);
+      // Only include future or today’s matches
+      return matchDate >= new Date(now.toDateString());
+    });
+
+    if (upcoming.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center">🎉 No more matches remaining!</td></tr>`;
+      return;
+    }
+
+    upcoming.forEach(match => {
+      const dateObj = new Date(match.DateUtc);
+      const dateStr = dateObj.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+      const timeStr = dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: true });
+
+      const row = `
+        <tr>
+          <td>${match.MatchNumber}</td>
+          <td>${convertToIST(match.DateUtc)}</td>
+          <td>${timeStr}</td>
+          <td>${match.Location}</td>
+          <td>${match.HomeTeam}</td>
+          <td>${match.AwayTeam}</td>
+        </tr>
+      `;
+      tableBody.insertAdjacentHTML("beforeend", row);
+    });
+  }
+
+  renderUpcomingMatches();
     </script>
 
 </body>
