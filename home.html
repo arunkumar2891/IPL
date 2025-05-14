@@ -34,23 +34,41 @@
 	    background-color: white;
 	    color: white;
         }
-	table { 
-    	    width: 90%; 
-    	    border-collapse: collapse; 
-   	    margin-top: 10px; 
-	}
-	th, td { 
-	    border: 2px solid black; /* Added a thicker border */
-	    padding: 1px; 
-	    text-align: left; 
-	}
-	th { 
-	    background-color: #0047AB; 
-	}
-	.highlight { 
-	    background-color: yellow; 
-	    font-weight: bold; 
-	}
+	table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-family: Arial, sans-serif;
+    background-color: white;
+    color: #0047AB;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+th {
+    background-color: #0047AB;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    border: 2px solid #0047AB;
+    font-weight: 600;
+}
+
+td {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    background-color: #fefefe;
+}
+
+tr:nth-child(even) td {
+    background-color: #f7faff;
+}
+
+tr:hover td {
+    background-color: #e6f2ff;
+    cursor: pointer;
+}
 	.timer-container {
     text-align: center;
     margin-top: 30px;
@@ -93,6 +111,7 @@
     color: #444;
     font-size: 1rem;
   }
+   
     </style>
 </head>
 <body>
@@ -156,7 +175,7 @@
         </tr>
       </tbody>
     </table>
-	
+
     <div id="upcomingMatches">
   <h2>🏏 Upcoming IPL Matches</h2>
   <table id="matchesTable" border="1" cellpadding="10">
@@ -174,7 +193,7 @@
       <!-- Rows will be populated by JS -->
     </tbody>
   </table>
-</div>
+</div>	
     <!--<div id="leaderboard"></div>-->
     <script src="/env.js"></script>
     <script>
@@ -425,34 +444,6 @@
               stats[key].count += 1;
               stats[key].totalBid += bidAmount;
             });
-            
-            /*const result = Object.values(stats).map(item => ({
-              ...item,
-              customMetric: parseFloat((item.totalBid / 20).toFixed(2))
-            }));*/
-
-	    //document.getElementById("bidDetailsSection").style.display = "block";
-
-	/*document.addEventListener("DOMContentLoaded", () => {
-  		const tbody = document.getElementById("tableBody");
-	  	if (!tbody) {
-	    		console.error("tableBody element not found");
-	    	return;
-		}
-            //const tbody = document.getElementById("tableBody");
-	    console.log("5");
-	    console.log(result);
-            result.forEach(row => {
-              const tr = document.createElement("tr");
-              tr.innerHTML = `
-                <td>${row.group}</td>
-                <td>${row.team}</td>
-                <td>${row.customMetric}</td>
-              `;
-	      console.log("tr - ",tr);
-              tbody.appendChild(tr);
-            });
-	});*/
             } catch (error) {
                 console.error("Bid Details Fetch Error:", error);
                 alert("Fetch Error. Please try again.");
@@ -532,28 +523,6 @@
     fetchBidDetailsAndRender();
 		}
     	}
-  /*const nextMatchTime = new Date('2025-05-17T14:00:00Z'); // 7:30 PM IST is 14:00 UTC
-
-  function updateCountdown() {
-    const now = new Date();
-    const diff = nextMatchTime - now;
-
-    if (diff <= 0) {
-      document.getElementById("countdown").innerText = "It's match time! 🏏";
-      clearInterval(timer);
-      return;
-    }
-
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    document.getElementById("countdown").innerText =
-      `${hours}h ${minutes}m ${seconds}s`;
-  }
-
-  const timer = setInterval(updateCountdown, 1000);
-  updateCountdown(); // Run once immediately*/
 	    const nextMatchTime = new Date('2025-05-17T14:00:00Z'); // Update to actual match time
 
   function updateCountdown() {
@@ -579,7 +548,6 @@
 
   const timer = setInterval(updateCountdown, 1000);
   updateCountdown();
-  
   const remainingFixtures = [{"MatchNumber":59,"RoundNumber":7,"DateUtc":"2025-05-17 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Kolkata Knight Riders","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":60,"RoundNumber":7,"DateUtc":"2025-05-18 10:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Rajasthan Royals","AwayTeam":"Punjab Kings","Group":null},{"MatchNumber":61,"RoundNumber":7,"DateUtc":"2025-05-18 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Delhi Capitals","AwayTeam":"Gujarat Giants","Group":null},{"MatchNumber":62,"RoundNumber":8,"DateUtc":"2025-05-19 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":63,"RoundNumber":8,"DateUtc":"2025-05-20 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Chennai Super Kings","AwayTeam":"Rajasthan Royals","Group":null},{"MatchNumber":64,"RoundNumber":8,"DateUtc":"2025-05-21 14:00:00Z","Location":"Wankhede Stadium","HomeTeam":"Mumbai Indians","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":65,"RoundNumber":8,"DateUtc":"2025-05-22 14:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Lucknow Super Giants","Group":null},{"MatchNumber":66,"RoundNumber":8,"DateUtc":"2025-05-23 14:00:00Z","Location":"M Chinnaswamy Stadium","HomeTeam":"Royal Challengers Bengaluru","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":67,"RoundNumber":8,"DateUtc":"2025-05-24 14:00:00Z","Location":"Sawai Mansingh Stadium","HomeTeam":"Punjab Kings","AwayTeam":"Delhi Capitals","Group":null},{"MatchNumber":68,"RoundNumber":8,"DateUtc":"2025-05-25 10:00:00Z","Location":"Narendra Modi Stadium","HomeTeam":"Gujarat Titans","AwayTeam":"Chennai Super Kings","Group":null},{"MatchNumber":69,"RoundNumber":8,"DateUtc":"2025-05-25 14:00:00Z","Location":"Arun Jaitley Stadium","HomeTeam":"Sunrisers Hyderabad","AwayTeam":"Kolkata Knight Riders","Group":null},{"MatchNumber":70,"RoundNumber":8,"DateUtc":"2025-05-26 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Sunrisers Hyderabad","Group":null},{"MatchNumber":71,"RoundNumber":8,"DateUtc":"2025-05-26 14:00:00Z","Location":"Bharat Ratna Shri Atal Bihari Vajpayee Ekana Crick","HomeTeam":"Lucknow Super Giants","AwayTeam":"Royal Challengers Bengaluru","Group":null},{"MatchNumber":72,"RoundNumber":"NaN","DateUtc":"2025-05-29 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":73,"RoundNumber":"NaN","DateUtc":"2025-05-30 14:00:00Z","Location":"Rajiv Gandhi International Stadium","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":74,"RoundNumber":"NaN","DateUtc":"2025-06-01 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null},{"MatchNumber":75,"RoundNumber":"NaN","DateUtc":"2025-06-03 14:00:00Z","Location":"Eden Gardens","HomeTeam":"To be announced","AwayTeam":"To be announced","Group":null}];
 
   function renderUpcomingMatches() {
