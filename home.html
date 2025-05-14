@@ -234,12 +234,12 @@ tr:hover td {
   <table id="matchesTable" border="1" cellpadding="10">
     <thead>
       <tr>
-        <th>Match #</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Venue</th>
-        <th>Home Team</th>
-        <th>Away Team</th>
+        <th data-label="Match Number">Match #</th>
+        <th data-label="Date">Date</th>
+        <th data-label="Time">Time</th>
+        <th data-label="Venue">Venue</th>
+        <th data-label="Home Team">Home Team</th>
+        <th data-label="Away Team">Away Team</th>
       </tr>
     </thead>
     <tbody id="matchesBody">
@@ -626,12 +626,12 @@ tr:hover td {
 
       const row = `
         <tr>
-          <td>${match.MatchNumber}</td>
-          <td>${dateStr}</td>
-          <td>${timeStr}</td>
-          <td>${match.Location}</td>
-          <td>${match.HomeTeam}</td>
-          <td>${match.AwayTeam}</td>
+          <td data-label="Match Number">${match.MatchNumber}</td>
+          <td data-label="Date">${dateStr}</td>
+          <td data-label="Time">${timeStr}</td>
+          <td data-label="Venue">${match.Location}</td>
+          <td data-label="Home Team">${match.HomeTeam}</td>
+          <td data-label="Away Team">${match.AwayTeam}</td>
         </tr>
       `;
       tableBody.insertAdjacentHTML("beforeend", row);
