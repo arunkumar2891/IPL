@@ -454,7 +454,7 @@
     // Replace this mock result with your real fetch logic
     const result = Object.values(stats).map(item => ({
         ...item,
-        customMetric: parseFloat((item.totalBid / 20).toFixed(2))
+        customMetric: parseFloat((item.totalBid / 50).toFixed(2))
     }));
     const tbody = document.getElementById("tableBody");
 	console.log(tbody);
